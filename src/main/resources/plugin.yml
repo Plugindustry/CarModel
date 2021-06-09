@@ -1,0 +1,6 @@
+name: CarModel
+version: ${project.version}
+main: io.github.plugindustry.carmodel.CarModel
+api-version: 1.15
+depend: [ WheelCore ]
+load: STARTUP
