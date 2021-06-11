@@ -21,11 +21,10 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nonnull;
 
 public class TestBlock extends DummyBlock {
-    private InventoryWindow window;
-    private WindowInteractor interactor;
+    private final WindowInteractor interactor;
 
     public TestBlock() {
-        window = new InventoryWindow(new SlotSize(9, 1), "Test");
+        InventoryWindow window = new InventoryWindow(new SlotSize(9, 1), "Test");
         window.addWidget(new WidgetFixedItem("fixed_1",
                                              ItemStackUtil.create(Material.IRON_INGOT)
                                                      .setDisplayName("I'm fixed")
