@@ -19,6 +19,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class TestBlock extends DummyBlock {
     private final WindowInteractor interactor;
@@ -36,6 +37,13 @@ public class TestBlock extends DummyBlock {
                                           (pos, event) -> {
                                               event.getWhoClicked().sendMessage("Hello world!");
                                               PlayerUtil.sendActionBar((Player) event.getWhoClicked(), "Test");
+                                              BlockData data = MainManager.getBlockData(Objects.requireNonNull(event.getWhoClicked()
+                                                                                                                       .getTargetBlockExact(
+                                                                                                                               4))
+                                                                                                .getLocation());
+                                              if (data instanceof TestBlockData)
+                                                  event.getWhoClicked().sendMessage("Data: " +
+                                                                                    ((TestBlockData) data).test);
                                           }), new Position(2, 1));
 
         interactor = new WindowInteractor(window);
@@ -43,7 +51,7 @@ public class TestBlock extends DummyBlock {
 
     @Override
     public boolean onBlockPlace(ItemStack item, Block block) {
-        if(super.onBlockPlace(item, block)) {
+        if (super.onBlockPlace(item, block)) {
             MainManager.setBlockData(block.getLocation(), new TestBlockData("test"));
             return true;
         }
