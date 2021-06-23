@@ -10,21 +10,27 @@ import io.github.plugindustry.wheelcore.inventory.WindowInteractor;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
 import io.github.plugindustry.wheelcore.manager.MainManager;
+import io.github.plugindustry.wheelcore.manager.MultiBlockManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import io.github.plugindustry.wheelcore.utils.PlayerUtil;
+import io.github.plugindustry.wheelcore.world.multiblock.Definers;
+import io.github.plugindustry.wheelcore.world.multiblock.Matchers;
+import io.github.plugindustry.wheelcore.world.multiblock.Relocators;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class TestBlock extends DummyBlock {
+    public final static TestBlock INSTANCE = new TestBlock();
     private final WindowInteractor interactor;
 
-    public TestBlock() {
+    private TestBlock() {
         InventoryWindow window = new InventoryWindow(new SlotSize(9, 1), "Test");
         window.addWidget(new WidgetFixedItem("fixed_1",
                                              ItemStackUtil.create(Material.IRON_INGOT)
@@ -44,9 +50,23 @@ public class TestBlock extends DummyBlock {
                                               if (data instanceof TestBlockData)
                                                   event.getWhoClicked().sendMessage("Data: " +
                                                                                     ((TestBlockData) data).test);
+
+                                              MultiBlockManager.getAvailableStructures(this)
+                                                      .stream()
+                                                      .map(MultiBlockManager::getStructureData)
+                                                      .map(env -> env.<Integer>getEnvironmentArg("height"))
+                                                      .forEach(i -> event.getWhoClicked()
+                                                              .sendMessage(String.valueOf(i)));
                                           }), new Position(2, 1));
 
         interactor = new WindowInteractor(window);
+
+        MultiBlockManager.register(this, MultiBlockManager.Conditions.create()
+                .then(Relocators.move(0, 1, 0))
+                .then(Definers.scan("height", new Vector(0, 1, 0), Material.COBBLESTONE, 16))
+                .check(env -> env.<Integer>getEnvironmentArg("height") >= 5)
+                .then(env -> env.setEnvironmentArg("height", env.<Integer>getEnvironmentArg("height") - 1))
+                .check(Matchers.cube(3, "height", 3, Material.COBBLESTONE)));
     }
 
     @Override

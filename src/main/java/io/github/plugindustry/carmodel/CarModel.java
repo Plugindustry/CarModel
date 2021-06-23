@@ -20,7 +20,7 @@ public final class CarModel extends JavaPlugin {
 
         I18n.load(new InputStreamReader(Objects.requireNonNull(getResource("zh_cn.lang")), StandardCharsets.UTF_8));
         ConstItem.init();
-        MainManager.registerBlock("TEST_BLOCK", new TestBlock());
+        MainManager.registerBlock("TEST_BLOCK", TestBlock.INSTANCE);
         MainManager.registerItem("TEST_ITEM", new TestItem());
     }
 
