@@ -1,6 +1,7 @@
 package io.github.plugindustry.carmodel;
 
 import io.github.plugindustry.carmodel.block.TestBlock;
+import io.github.plugindustry.carmodel.block.TestWire;
 import io.github.plugindustry.carmodel.item.TestItem;
 import io.github.plugindustry.wheelcore.i18n.I18n;
 import io.github.plugindustry.wheelcore.manager.MainManager;
@@ -21,7 +22,8 @@ public final class CarModel extends JavaPlugin {
         I18n.load(new InputStreamReader(Objects.requireNonNull(getResource("zh_cn.lang")), StandardCharsets.UTF_8));
         ConstItem.init();
         MainManager.registerBlock("TEST_BLOCK", TestBlock.INSTANCE);
-        MainManager.registerItem("TEST_ITEM", new TestItem());
+        MainManager.registerBlock("TEST_WIRE", TestWire.INSTANCE);
+        MainManager.registerItem("TEST_ITEM", TestItem.INSTANCE);
     }
 
     @Override

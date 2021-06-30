@@ -1,6 +1,7 @@
 package io.github.plugindustry.carmodel.block;
 
 import io.github.plugindustry.carmodel.ConstItem;
+import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
 import io.github.plugindustry.wheelcore.inventory.InventoryWindow;
@@ -11,6 +12,7 @@ import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
 import io.github.plugindustry.wheelcore.manager.MainManager;
 import io.github.plugindustry.wheelcore.manager.MultiBlockManager;
+import io.github.plugindustry.wheelcore.manager.PowerManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import io.github.plugindustry.wheelcore.utils.PlayerUtil;
 import io.github.plugindustry.wheelcore.world.multiblock.Definers;
@@ -26,12 +28,13 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-public class TestBlock extends DummyBlock {
+public class TestBlock extends DummyBlock implements Tickable {
     public final static TestBlock INSTANCE = new TestBlock();
-    private final WindowInteractor interactor;
+    private final InventoryWindow window;
 
+    @SuppressWarnings("unchecked")
     private TestBlock() {
-        InventoryWindow window = new InventoryWindow(new SlotSize(9, 1), "Test");
+        window = new InventoryWindow(new SlotSize(9, 1), "Test");
         window.addWidget(new WidgetFixedItem("fixed_1",
                                              ItemStackUtil.create(Material.IRON_INGOT)
                                                      .setDisplayName("I'm fixed")
@@ -43,13 +46,9 @@ public class TestBlock extends DummyBlock {
                                           (pos, event) -> {
                                               event.getWhoClicked().sendMessage("Hello world!");
                                               PlayerUtil.sendActionBar((Player) event.getWhoClicked(), "Test");
-                                              BlockData data = MainManager.getBlockData(Objects.requireNonNull(event.getWhoClicked()
-                                                                                                                       .getTargetBlockExact(
-                                                                                                                               4))
-                                                                                                .getLocation());
-                                              if (data instanceof TestBlockData)
-                                                  event.getWhoClicked().sendMessage("Data: " +
-                                                                                    ((TestBlockData) data).test);
+                                              TestBlockData data = ((ExtendedInteractor<TestBlockData>) Objects.requireNonNull(
+                                                      event.getInventory().getHolder())).extend;
+                                              event.getWhoClicked().sendMessage("Data: " + data.test);
 
                                               MultiBlockManager.getAvailableStructures(this)
                                                       .stream()
@@ -57,9 +56,10 @@ public class TestBlock extends DummyBlock {
                                                       .map(env -> env.<Integer>getEnvironmentArg("height"))
                                                       .forEach(i -> event.getWhoClicked()
                                                               .sendMessage(String.valueOf(i)));
-                                          }), new Position(2, 1));
 
-        interactor = new WindowInteractor(window);
+                                              data.attr = !data.attr;
+                                              event.getWhoClicked().sendMessage("Attr: " + data.attr);
+                                          }), new Position(2, 1));
 
         MultiBlockManager.register(this, MultiBlockManager.Conditions.create()
                 .then(Relocators.move(0, 1, 0))
@@ -93,19 +93,41 @@ public class TestBlock extends DummyBlock {
     @Override
     public boolean onInteract(Player player, Action action, ItemStack tool, Block block) {
         if (super.onInteract(player, action, tool, block)) {
-            if (action == Action.RIGHT_CLICK_BLOCK) {
-                player.openInventory(interactor.getInventory());
-            }
+            if (action == Action.RIGHT_CLICK_BLOCK)
+                player.openInventory(((TestBlockData) MainManager.getBlockData(block.getLocation())).interactor.getInventory());
             return true;
         }
         return false;
     }
 
+    @Override
+    public void onTick() {
+        MainManager.dataProvider.blocksOf(this).forEach(block -> {
+            TestBlockData data = (TestBlockData) MainManager.getBlockData(block);
+            if (data.attr)
+                PowerManager.outputPower(block, 30);
+            else
+                PowerManager.inputPower(block, 30);
+        });
+    }
+
     public static class TestBlockData extends BlockData {
+        private transient final ExtendedInteractor<TestBlockData> interactor = new ExtendedInteractor<>(INSTANCE.window,
+                                                                                                        this);
         public String test;
+        public boolean attr = false;
 
         public TestBlockData(String test) {
             this.test = test;
+        }
+    }
+
+    static class ExtendedInteractor<E> extends WindowInteractor {
+        public final E extend;
+
+        public ExtendedInteractor(InventoryWindow window, E extend) {
+            super(window);
+            this.extend = extend;
         }
     }
 }

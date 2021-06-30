@@ -4,3 +4,6 @@ item.test_block.lore[1]=伟大旅途的第一步
 item.test_item.name=测试物品
 item.test_item.lore[0]=用于测试用途
 item.test_item.lore[1]=伟大旅途的第二步
+item.test_wire.name=测试线缆
+item.test_wire.lore[0]=用于测试用途
+item.test_wire.lore[1]=伟大旅途的第三步

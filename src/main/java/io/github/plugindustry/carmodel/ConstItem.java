@@ -8,14 +8,14 @@ import org.bukkit.inventory.ItemStack;
 
 public final class ConstItem {
     public static ItemStack TEST_BLOCK_ITEM;
+    public static ItemStack TEST_WIRE_ITEM;
     public static ItemStack TEST_ITEM;
 
     public static void init() {
         ItemMapping.set("TEST_BLOCK", ItemStackUtil.create(Material.IRON_BLOCK)
                 .setDisplayName(I18n.getLocaleString("item.test_block.name"))
                 .setLore(I18n.getLocaleStringList("item.test_block.lore"))
-                .setId("TEST_BLOCK")
-                .getItemStack());
+                .setId("TEST_BLOCK").getItemStack());
         TEST_BLOCK_ITEM = ItemMapping.get("TEST_BLOCK");
 
         ItemMapping.set("TEST_ITEM", ItemStackUtil.create(Material.IRON_INGOT)
@@ -25,5 +25,12 @@ public final class ConstItem {
                 .setOreDictionary("test")
                 .getItemStack());
         TEST_ITEM = ItemMapping.get("TEST_ITEM");
+
+        ItemMapping.set("TEST_WIRE", ItemStackUtil.create(Material.IRON_BARS)
+                .setDisplayName(I18n.getLocaleString("item.test_wire.name"))
+                .setLore(I18n.getLocaleStringList("item.test_wire.lore"))
+                .setId("TEST_WIRE")
+                .getItemStack());
+        TEST_BLOCK_ITEM = ItemMapping.get("TEST_WIRE");
     }
 }

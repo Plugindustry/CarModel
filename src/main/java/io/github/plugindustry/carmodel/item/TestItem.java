@@ -9,6 +9,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class TestItem extends DummyItem implements Tickable {
+    public final static TestItem INSTANCE = new TestItem();
+
+    private TestItem() {}
+
     @Override
     public void onTick() {
         Bukkit.getOnlinePlayers()
