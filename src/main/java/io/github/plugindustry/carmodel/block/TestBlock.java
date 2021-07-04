@@ -4,10 +4,10 @@ import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.inventory.InventoryWindow;
+import io.github.plugindustry.wheelcore.inventory.ClassicInventoryInteractor;
 import io.github.plugindustry.wheelcore.inventory.Position;
 import io.github.plugindustry.wheelcore.inventory.SlotSize;
-import io.github.plugindustry.wheelcore.inventory.WindowInteractor;
+import io.github.plugindustry.wheelcore.inventory.Window;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
 import io.github.plugindustry.wheelcore.manager.MainManager;
@@ -30,11 +30,11 @@ import java.util.Objects;
 
 public class TestBlock extends DummyBlock implements Tickable {
     public final static TestBlock INSTANCE = new TestBlock();
-    private final InventoryWindow window;
+    private final Window window;
 
     @SuppressWarnings("unchecked")
     private TestBlock() {
-        window = new InventoryWindow(new SlotSize(9, 1), "Test");
+        window = new Window(new SlotSize(9, 1), "Test");
         window.addWidget(new WidgetFixedItem("fixed_1",
                                              ItemStackUtil.create(Material.IRON_INGOT)
                                                      .setDisplayName("I'm fixed")
@@ -43,22 +43,21 @@ public class TestBlock extends DummyBlock implements Tickable {
                                           ItemStackUtil.create(Material.OAK_SIGN)
                                                   .setDisplayName("I'm button")
                                                   .getItemStack(),
-                                          (pos, event) -> {
-                                              event.getWhoClicked().sendMessage("Hello world!");
-                                              PlayerUtil.sendActionBar((Player) event.getWhoClicked(), "Test");
+                                          (pos, info) -> {
+                                              info.whoClicked.sendMessage("Hello world!");
+                                              PlayerUtil.sendActionBar((Player) info.whoClicked, "Test");
                                               TestBlockData data = ((ExtendedInteractor<TestBlockData>) Objects.requireNonNull(
-                                                      event.getInventory().getHolder())).extend;
-                                              event.getWhoClicked().sendMessage("Data: " + data.test);
+                                                      info.inventory.getHolder())).extend;
+                                              info.whoClicked.sendMessage("Data: " + data.test);
 
                                               MultiBlockManager.getAvailableStructures(this)
                                                       .stream()
                                                       .map(MultiBlockManager::getStructureData)
                                                       .map(env -> env.<Integer>getEnvironmentArg("height"))
-                                                      .forEach(i -> event.getWhoClicked()
-                                                              .sendMessage(String.valueOf(i)));
+                                                      .forEach(i -> info.whoClicked.sendMessage(String.valueOf(i)));
 
                                               data.attr = !data.attr;
-                                              event.getWhoClicked().sendMessage("Attr: " + data.attr);
+                                              info.whoClicked.sendMessage("Attr: " + data.attr);
                                           }), new Position(2, 1));
 
         MultiBlockManager.register(this, MultiBlockManager.Conditions.create()
@@ -114,18 +113,20 @@ public class TestBlock extends DummyBlock implements Tickable {
     public static class TestBlockData extends BlockData {
         private transient final ExtendedInteractor<TestBlockData> interactor = new ExtendedInteractor<>(INSTANCE.window,
                                                                                                         this);
-        public String test;
+        public String test = "test";
         public boolean attr = false;
+
+        public TestBlockData() {}
 
         public TestBlockData(String test) {
             this.test = test;
         }
     }
 
-    static class ExtendedInteractor<E> extends WindowInteractor {
+    static class ExtendedInteractor<E> extends ClassicInventoryInteractor {
         public final E extend;
 
-        public ExtendedInteractor(InventoryWindow window, E extend) {
+        public ExtendedInteractor(Window window, E extend) {
             super(window);
             this.extend = extend;
         }
