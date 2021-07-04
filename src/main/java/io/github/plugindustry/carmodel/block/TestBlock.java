@@ -4,10 +4,10 @@ import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.inventory.InventoryWindow;
+import io.github.plugindustry.wheelcore.inventory.ClassicInventoryInteractor;
 import io.github.plugindustry.wheelcore.inventory.Position;
 import io.github.plugindustry.wheelcore.inventory.SlotSize;
-import io.github.plugindustry.wheelcore.inventory.WindowInteractor;
+import io.github.plugindustry.wheelcore.inventory.Window;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
 import io.github.plugindustry.wheelcore.manager.MainManager;
@@ -30,11 +30,11 @@ import java.util.Objects;
 
 public class TestBlock extends DummyBlock implements Tickable {
     public final static TestBlock INSTANCE = new TestBlock();
-    private final InventoryWindow window;
+    private final Window window;
 
     @SuppressWarnings("unchecked")
     private TestBlock() {
-        window = new InventoryWindow(new SlotSize(9, 1), "Test");
+        window = new Window(new SlotSize(9, 1), "Test");
         window.addWidget(new WidgetFixedItem("fixed_1",
                                              ItemStackUtil.create(Material.IRON_INGOT)
                                                      .setDisplayName("I'm fixed")
@@ -114,18 +114,20 @@ public class TestBlock extends DummyBlock implements Tickable {
     public static class TestBlockData extends BlockData {
         private transient final ExtendedInteractor<TestBlockData> interactor = new ExtendedInteractor<>(INSTANCE.window,
                                                                                                         this);
-        public String test;
+        public String test = "test";
         public boolean attr = false;
+
+        public TestBlockData() {}
 
         public TestBlockData(String test) {
             this.test = test;
         }
     }
 
-    static class ExtendedInteractor<E> extends WindowInteractor {
+    static class ExtendedInteractor<E> extends ClassicInventoryInteractor {
         public final E extend;
 
-        public ExtendedInteractor(InventoryWindow window, E extend) {
+        public ExtendedInteractor(Window window, E extend) {
             super(window);
             this.extend = extend;
         }
