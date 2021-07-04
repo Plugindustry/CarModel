@@ -69,7 +69,7 @@ public class TestBlock extends DummyBlock implements Tickable {
     }
 
     @Override
-    public boolean onBlockPlace(ItemStack item, Block block) {
+    public boolean onBlockPlace(@Nonnull ItemStack item, @Nonnull Block block) {
         if (super.onBlockPlace(item, block)) {
             MainManager.setBlockData(block.getLocation(), new TestBlockData("test"));
             return true;
@@ -90,7 +90,7 @@ public class TestBlock extends DummyBlock implements Tickable {
     }
 
     @Override
-    public boolean onInteract(Player player, Action action, ItemStack tool, Block block) {
+    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, ItemStack tool, Block block) {
         if (super.onInteract(player, action, tool, block)) {
             if (action == Action.RIGHT_CLICK_BLOCK)
                 player.openInventory(((TestBlockData) MainManager.getBlockData(block.getLocation())).interactor.getInventory());
