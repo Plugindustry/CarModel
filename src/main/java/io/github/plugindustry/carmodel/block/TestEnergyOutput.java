@@ -92,13 +92,13 @@ public class TestEnergyOutput extends DummyBlock implements Tickable, EnergyOutp
     @Nonnull
     @Override
     public ItemStack getItemStack() {
-        return ConstItem.TEST_ENERGY_INPUT_ITEM;
+        return ConstItem.TEST_ENERGY_OUTPUT_ITEM;
     }
 
     @Nonnull
     @Override
     public Material getMaterial() {
-        return Material.IRON_BLOCK;
+        return Material.REDSTONE_BLOCK;
     }
 
     @Override
