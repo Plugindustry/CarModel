@@ -1,10 +1,10 @@
 package io.github.plugindustry.carmodel.block;
 
 import io.github.plugindustry.carmodel.ConstItem;
+import io.github.plugindustry.carmodel.utils.ExtendedInteractor;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.inventory.ClassicInventoryInteractor;
 import io.github.plugindustry.wheelcore.inventory.Position;
 import io.github.plugindustry.wheelcore.inventory.SlotSize;
 import io.github.plugindustry.wheelcore.inventory.Window;
@@ -120,15 +120,6 @@ public class TestBlock extends DummyBlock implements Tickable {
 
         public TestBlockData(String test) {
             this.test = test;
-        }
-    }
-
-    static class ExtendedInteractor<E> extends ClassicInventoryInteractor {
-        public final E extend;
-
-        public ExtendedInteractor(Window window, E extend) {
-            super(window);
-            this.extend = extend;
         }
     }
 }

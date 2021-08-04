@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public final class ConstItem {
+    public static ItemStack TEST_ENERGY_INPUT_ITEM;
+    public static ItemStack TEST_ENERGY_OUTPUT_ITEM;
     public static ItemStack TEST_BLOCK_ITEM;
     public static ItemStack TEST_WIRE_ITEM;
     public static ItemStack TEST_ITEM;
@@ -15,7 +17,8 @@ public final class ConstItem {
         ItemMapping.set("TEST_BLOCK", ItemStackUtil.create(Material.IRON_BLOCK)
                 .setDisplayName(I18n.getLocaleString("item.test_block.name"))
                 .setLore(I18n.getLocaleStringList("item.test_block.lore"))
-                .setId("TEST_BLOCK").getItemStack());
+                .setId("TEST_BLOCK")
+                .getItemStack());
         TEST_BLOCK_ITEM = ItemMapping.get("TEST_BLOCK");
 
         ItemMapping.set("TEST_ITEM", ItemStackUtil.create(Material.IRON_INGOT)
@@ -31,6 +34,18 @@ public final class ConstItem {
                 .setLore(I18n.getLocaleStringList("item.test_wire.lore"))
                 .setId("TEST_WIRE")
                 .getItemStack());
-        TEST_BLOCK_ITEM = ItemMapping.get("TEST_WIRE");
+        TEST_WIRE_ITEM = ItemMapping.get("TEST_WIRE");
+
+        ItemMapping.set("TEST_ENERGY_INPUT",
+                        ItemStackUtil.create(Material.IRON_BLOCK).setDisplayName(I18n.getLocaleString(
+                                "item.test_energy_input.name")).setLore(I18n.getLocaleStringList(
+                                "item.test_energy_input.lore")).setId("TEST_ENERGY_INPUT").getItemStack());
+        TEST_ENERGY_INPUT_ITEM = ItemMapping.get("TEST_ENERGY_INPUT");
+
+        ItemMapping.set("TEST_ENERGY_OUTPUT",
+                        ItemStackUtil.create(Material.REDSTONE_BLOCK).setDisplayName(I18n.getLocaleString(
+                                "item.test_energy_output.name")).setLore(I18n.getLocaleStringList(
+                                "item.test_energy_output.lore")).setId("TEST_ENERGY_OUTPUT").getItemStack());
+        TEST_ENERGY_OUTPUT_ITEM = ItemMapping.get("TEST_ENERGY_OUTPUT");
     }
 }
