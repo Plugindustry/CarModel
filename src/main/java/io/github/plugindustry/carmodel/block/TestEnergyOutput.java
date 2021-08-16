@@ -25,6 +25,8 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.NumericPrompt;
 import org.bukkit.conversations.Prompt;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -71,13 +73,23 @@ public class TestEnergyOutput extends DummyBlock implements Tickable, EnergyOutp
 
     @Override
     public void onTick() {
-        MainManager.dataProvider.blocksOf(this)
-                .stream()
-                .map(MainManager::getBlockData)
-                .forEach(data -> ((TestEnergyOutputData) data).tickOutput = 0.0);
+        MainManager.dataProvider.blocksOf(this).stream().map(MainManager::getBlockData).forEach(data -> {
+            TestEnergyOutputData temp = (TestEnergyOutputData) data;
+            temp.output(-temp.tickOutput);
+        });
         MainManager.dataProvider.blocksOf(this).forEach(block -> PowerManager.outputPower(block,
-                                                                                          ((TestEnergyOutputData) MainManager
-                                                                                                  .getBlockData(block)).expectOutput));
+                                                                                          ((TestEnergyOutputData) MainManager.getBlockData(
+                                                                                                  block)).expectOutput));
+    }
+
+    @Override
+    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, ItemStack tool, Block block) {
+        if (super.onInteract(player, action, tool, block)) {
+            if (action == Action.RIGHT_CLICK_BLOCK)
+                player.openInventory(((TestEnergyOutputData) MainManager.getBlockData(block.getLocation())).interactor.getInventory());
+            return true;
+        }
+        return false;
     }
 
     @Override
