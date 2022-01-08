@@ -5,8 +5,11 @@ import io.github.plugindustry.carmodel.utils.ExtendedInteractor;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.inventory.Position;
-import io.github.plugindustry.wheelcore.inventory.SlotSize;
+import io.github.plugindustry.wheelcore.interfaces.block.Wire;
+import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
+import io.github.plugindustry.wheelcore.interfaces.inventory.SlotSize;
+import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
+import io.github.plugindustry.wheelcore.interfaces.power.EnergyOutputable;
 import io.github.plugindustry.wheelcore.inventory.Window;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
@@ -18,17 +21,20 @@ import io.github.plugindustry.wheelcore.utils.PlayerUtil;
 import io.github.plugindustry.wheelcore.world.multiblock.Definers;
 import io.github.plugindustry.wheelcore.world.multiblock.Matchers;
 import io.github.plugindustry.wheelcore.world.multiblock.Relocators;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class TestBlock extends DummyBlock implements Tickable {
+public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, EnergyOutputable {
     public final static TestBlock INSTANCE = new TestBlock();
     private final Window window;
 
@@ -69,8 +75,8 @@ public class TestBlock extends DummyBlock implements Tickable {
     }
 
     @Override
-    public boolean onBlockPlace(@Nonnull ItemStack item, @Nonnull Block block) {
-        if (super.onBlockPlace(item, block)) {
+    public boolean onBlockPlace(@Nonnull ItemStack item, @Nonnull Block block, @Nonnull Block blockAgainst, @Nonnull Player player) {
+        if (super.onBlockPlace(item, block, blockAgainst, player)) {
             MainManager.setBlockData(block.getLocation(), new TestBlockData("test"));
             return true;
         }
@@ -90,10 +96,11 @@ public class TestBlock extends DummyBlock implements Tickable {
     }
 
     @Override
-    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, ItemStack tool, Block block) {
-        if (super.onInteract(player, action, tool, block)) {
+    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
+        if (super.onInteract(player, action, tool, block, entity)) {
             if (action == Action.RIGHT_CLICK_BLOCK)
-                player.openInventory(((TestBlockData) MainManager.getBlockData(block.getLocation())).interactor.getInventory());
+                player.openInventory(((TestBlockData) Objects.requireNonNull(MainManager.getBlockData(Objects.requireNonNull(
+                        block).getLocation()))).interactor.getInventory());
             return true;
         }
         return false;
@@ -101,13 +108,21 @@ public class TestBlock extends DummyBlock implements Tickable {
 
     @Override
     public void onTick() {
-        MainManager.dataProvider.blocksOf(this).forEach(block -> {
+        MainManager.blockDataProvider.blocksOf(this).forEach(block -> {
             TestBlockData data = (TestBlockData) MainManager.getBlockData(block);
-            if (data.attr)
+            if (Objects.requireNonNull(data).attr)
                 PowerManager.outputPower(block, 30);
             else
                 PowerManager.inputPower(block, 30);
         });
+    }
+
+    @Override
+    public void finishInput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {}
+
+    @Override
+    public boolean finishOutput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
+        return true;
     }
 
     public static class TestBlockData extends BlockData {

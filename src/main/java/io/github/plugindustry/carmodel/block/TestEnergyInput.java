@@ -6,10 +6,10 @@ import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
 import io.github.plugindustry.wheelcore.interfaces.block.Wire;
+import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
+import io.github.plugindustry.wheelcore.interfaces.inventory.SlotSize;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
 import io.github.plugindustry.wheelcore.inventory.ClassicInventoryInteractor;
-import io.github.plugindustry.wheelcore.inventory.Position;
-import io.github.plugindustry.wheelcore.inventory.SlotSize;
 import io.github.plugindustry.wheelcore.inventory.Window;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
 import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
@@ -25,12 +25,14 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.NumericPrompt;
 import org.bukkit.conversations.Prompt;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInputable {
     public final static TestEnergyInput INSTANCE = new TestEnergyInput();
@@ -73,28 +75,30 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     @Override
     public void onTick() {
-        MainManager.dataProvider.blocksOf(this).stream().map(MainManager::getBlockData).forEach(data -> {
+        MainManager.blockDataProvider.blocksOf(this).stream().map(MainManager::getBlockData).forEach(data -> {
             TestEnergyInputData temp = (TestEnergyInputData) data;
-            temp.input(-temp.tickInput);
+            Objects.requireNonNull(temp).input(-temp.tickInput);
         });
-        MainManager.dataProvider.blocksOf(this).forEach(block -> PowerManager.inputPower(block,
-                                                                                         ((TestEnergyInputData) MainManager.getBlockData(
-                                                                                                 block)).expectInput));
+        MainManager.blockDataProvider.blocksOf(this).forEach(block -> PowerManager.inputPower(block,
+                                                                                              ((TestEnergyInputData) Objects.requireNonNull(
+                                                                                                      MainManager.getBlockData(
+                                                                                                              block))).expectInput));
     }
 
     @Override
-    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, ItemStack tool, Block block) {
-        if (super.onInteract(player, action, tool, block)) {
+    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
+        if (super.onInteract(player, action, tool, block, entity)) {
             if (action == Action.RIGHT_CLICK_BLOCK)
-                player.openInventory(((TestEnergyInputData) MainManager.getBlockData(block.getLocation())).interactor.getInventory());
+                player.openInventory(((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(Objects.requireNonNull(
+                        block).getLocation()))).interactor.getInventory());
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean onBlockPlace(@Nonnull ItemStack item, @Nonnull Block block) {
-        if (super.onBlockPlace(item, block)) {
+    public boolean onBlockPlace(@Nonnull ItemStack item, @Nonnull Block block, @Nonnull Block blockAgainst, @Nonnull Player player) {
+        if (super.onBlockPlace(item, block, blockAgainst, player)) {
             MainManager.setBlockData(block.getLocation(), new TestEnergyInputData());
             return true;
         }
