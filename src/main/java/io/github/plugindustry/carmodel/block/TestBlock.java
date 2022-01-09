@@ -75,7 +75,7 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     }
 
     @Override
-    public boolean onBlockPlace(@Nonnull ItemStack item, @Nonnull Block block, @Nonnull Block blockAgainst, @Nonnull Player player) {
+    public boolean onBlockPlace(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst, @Nullable Player player) {
         if (super.onBlockPlace(item, block, blockAgainst, player)) {
             MainManager.setBlockData(block.getLocation(), new TestBlockData("test"));
             return true;

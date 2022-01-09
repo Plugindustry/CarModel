@@ -97,7 +97,7 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
     }
 
     @Override
-    public boolean onBlockPlace(@Nonnull ItemStack item, @Nonnull Block block, @Nonnull Block blockAgainst, @Nonnull Player player) {
+    public boolean onBlockPlace(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst, @Nullable Player player) {
         if (super.onBlockPlace(item, block, blockAgainst, player)) {
             MainManager.setBlockData(block.getLocation(), new TestEnergyInputData());
             return true;
@@ -119,7 +119,7 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     @Override
     public void finishInput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
-        ((TestEnergyInputData) MainManager.getBlockData(block)).input(packet.amount);
+        ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(block))).input(packet.amount);
     }
 
     public static class TestEnergyInputData extends BlockData {
