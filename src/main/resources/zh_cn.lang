@@ -13,3 +13,6 @@ item.test_energy_input.lore[1]=伟大旅程的第三步
 item.test_energy_output.name=测试能量源
 item.test_energy_output.lore[0]=用于测试用途
 item.test_energy_output.lore[1]=伟大旅程的第三步
+item.test_tool.name=测试工具
+item.test_tool.lore[0]=用于测试用途
+item.test_tool.lore[1]=伟大旅途的第四步

@@ -5,6 +5,7 @@ import io.github.plugindustry.carmodel.block.TestEnergyInput;
 import io.github.plugindustry.carmodel.block.TestEnergyOutput;
 import io.github.plugindustry.carmodel.block.TestWire;
 import io.github.plugindustry.carmodel.item.TestItem;
+import io.github.plugindustry.carmodel.item.TestTool;
 import io.github.plugindustry.wheelcore.i18n.I18n;
 import io.github.plugindustry.wheelcore.manager.MainManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +28,7 @@ public final class CarModel extends JavaPlugin {
         MainManager.registerBlock("TEST_ENERGY_INPUT", TestEnergyInput.INSTANCE);
         MainManager.registerBlock("TEST_ENERGY_OUTPUT", TestEnergyOutput.INSTANCE);
         MainManager.registerItem("TEST_ITEM", TestItem.INSTANCE);
+        MainManager.registerItem("TEST_TOOL", TestTool.INSTANCE);
         ConstItem.init();
     }
 

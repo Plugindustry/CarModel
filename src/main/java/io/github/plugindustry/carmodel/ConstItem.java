@@ -1,6 +1,7 @@
 package io.github.plugindustry.carmodel;
 
 import io.github.plugindustry.carmodel.item.TestItem;
+import io.github.plugindustry.carmodel.item.TestTool;
 import io.github.plugindustry.wheelcore.i18n.I18n;
 import io.github.plugindustry.wheelcore.interfaces.item.DummyBlockItem;
 import io.github.plugindustry.wheelcore.interfaces.item.ItemBase;
@@ -16,6 +17,7 @@ public final class ConstItem {
     public static ItemStack TEST_BLOCK_ITEM;
     public static ItemStack TEST_WIRE_ITEM;
     public static ItemStack TEST_ITEM;
+    public static ItemStack TEST_TOOL;
 
     public static void init() {
         ItemBase instance = new DummyBlockItem();
@@ -59,5 +61,12 @@ public final class ConstItem {
                                 "item.test_energy_output.name")).setLore(I18n.getLocaleStringList(
                                 "item.test_energy_output.lore")).setInstance(instance).getItemStack());
         TEST_ENERGY_OUTPUT_ITEM = ItemMapping.get("TEST_ENERGY_OUTPUT");
+
+        ItemMapping.set("TEST_TOOL", ItemStackUtil.create(Material.IRON_PICKAXE)
+                .setDisplayName(I18n.getLocaleString("item.test_tool.name"))
+                .setLore(I18n.getLocaleStringList("item.test_tool.lore"))
+                .setInstance(TestTool.INSTANCE)
+                .getItemStack());
+        TEST_TOOL = ItemMapping.get("TEST_TOOL");
     }
 }
