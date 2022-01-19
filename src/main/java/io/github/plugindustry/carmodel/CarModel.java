@@ -8,6 +8,11 @@ import io.github.plugindustry.carmodel.item.TestItem;
 import io.github.plugindustry.carmodel.item.TestTool;
 import io.github.plugindustry.wheelcore.i18n.I18n;
 import io.github.plugindustry.wheelcore.manager.MainManager;
+import io.github.plugindustry.wheelcore.manager.RecipeRegistry;
+import io.github.plugindustry.wheelcore.manager.recipe.ShapedRecipeFactory;
+import io.github.plugindustry.wheelcore.manager.recipe.ShapelessRecipe;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStreamReader;
@@ -30,6 +35,16 @@ public final class CarModel extends JavaPlugin {
         MainManager.registerItem("TEST_ITEM", TestItem.INSTANCE);
         MainManager.registerItem("TEST_TOOL", TestTool.INSTANCE);
         ConstItem.init();
+
+        RecipeRegistry.register(ShapedRecipeFactory.create()
+                                        .pattern("aaa", "nsn", "nsn")
+                                        .map('a', ConstItem.TEST_ITEM)
+                                        .map('s', new ItemStack(Material.STICK))
+                                        .build(ConstItem.TEST_TOOL), "cm/test_tool_recipe", false);
+        RecipeRegistry.register(new ShapelessRecipe(ConstItem.TEST_ITEM,
+                                                    new ItemStack(Material.IRON_INGOT),
+                                                    new ItemStack(Material.DIAMOND)), "cm/test_item_recipe");
+        RecipeRegistry.updatePlaceholders();
     }
 
     @Override
