@@ -11,6 +11,8 @@ import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collections;
+
 public final class ConstItem {
     public static ItemStack TEST_ENERGY_INPUT_ITEM;
     public static ItemStack TEST_ENERGY_OUTPUT_ITEM;
@@ -22,51 +24,52 @@ public final class ConstItem {
     public static void init() {
         ItemBase instance = new DummyBlockItem();
         MainManager.registerItem("TEST_BLOCK", instance);
-        ItemMapping.set("TEST_BLOCK", ItemStackUtil.create(Material.IRON_BLOCK)
-                .setDisplayName(I18n.getLocaleString("item.test_block.name"))
-                .setLore(I18n.getLocaleStringList("item.test_block.lore"))
-                .setInstance(instance)
-                .getItemStack());
+        ItemMapping.set("TEST_BLOCK",
+                        ItemStackUtil.create(Material.IRON_BLOCK)
+                                .setDisplayName(I18n.getLocalePlaceholder("item/test_block/name"))
+                                .setLore(Collections.singletonList(I18n.getLocaleListPlaceholder("item/test_block/lore")))
+                                .setInstance(instance)
+                                .getItemStack());
         TEST_BLOCK_ITEM = ItemMapping.get("TEST_BLOCK");
 
-        ItemMapping.set("TEST_ITEM", ItemStackUtil.create(Material.IRON_INGOT)
-                .setDisplayName(I18n.getLocaleString("item.test_item.name"))
-                .setLore(I18n.getLocaleStringList("item.test_item.lore"))
-                .setInstance(TestItem.INSTANCE)
-                .setOreDictionary("test")
-                .getItemStack());
+        ItemMapping.set("TEST_ITEM", ItemStackUtil.create(Material.IRON_INGOT).setDisplayName(I18n.getLocalePlaceholder(
+                "item/test_item/name")).setLore(Collections.singletonList(I18n.getLocaleListPlaceholder(
+                "item/test_item/lore"))).setInstance(TestItem.INSTANCE).setOreDictionary("test").getItemStack());
         TEST_ITEM = ItemMapping.get("TEST_ITEM");
 
         instance = new DummyBlockItem();
         MainManager.registerItem("TEST_WIRE", instance);
-        ItemMapping.set("TEST_WIRE", ItemStackUtil.create(Material.IRON_BARS)
-                .setDisplayName(I18n.getLocaleString("item.test_wire.name"))
-                .setLore(I18n.getLocaleStringList("item.test_wire.lore"))
-                .setInstance(instance)
-                .getItemStack());
+        ItemMapping.set("TEST_WIRE", ItemStackUtil.create(Material.IRON_BARS).setDisplayName(I18n.getLocalePlaceholder(
+                "item/test_wire/name")).setLore(Collections.singletonList(I18n.getLocaleListPlaceholder(
+                "item/test_wire/lore"))).setInstance(instance).getItemStack());
         TEST_WIRE_ITEM = ItemMapping.get("TEST_WIRE");
 
         instance = new DummyBlockItem();
         MainManager.registerItem("TEST_ENERGY_INPUT", instance);
         ItemMapping.set("TEST_ENERGY_INPUT",
-                        ItemStackUtil.create(Material.IRON_BLOCK).setDisplayName(I18n.getLocaleString(
-                                "item.test_energy_input.name")).setLore(I18n.getLocaleStringList(
-                                "item.test_energy_input.lore")).setInstance(instance).getItemStack());
+                        ItemStackUtil.create(Material.IRON_BLOCK)
+                                .setDisplayName(I18n.getLocalePlaceholder("item/test_energy_input/name"))
+                                .setLore(Collections.singletonList(I18n.getLocaleListPlaceholder(
+                                        "item/test_energy_input/lore")))
+                                .setInstance(instance)
+                                .getItemStack());
         TEST_ENERGY_INPUT_ITEM = ItemMapping.get("TEST_ENERGY_INPUT");
 
         instance = new DummyBlockItem();
         MainManager.registerItem("TEST_ENERGY_OUTPUT", instance);
         ItemMapping.set("TEST_ENERGY_OUTPUT",
-                        ItemStackUtil.create(Material.REDSTONE_BLOCK).setDisplayName(I18n.getLocaleString(
-                                "item.test_energy_output.name")).setLore(I18n.getLocaleStringList(
-                                "item.test_energy_output.lore")).setInstance(instance).getItemStack());
+                        ItemStackUtil.create(Material.REDSTONE_BLOCK)
+                                .setDisplayName(I18n.getLocalePlaceholder("item/test_energy_output/name"))
+                                .setLore(Collections.singletonList(I18n.getLocaleListPlaceholder(
+                                        "item/test_energy_output/lore")))
+                                .setInstance(instance)
+                                .getItemStack());
         TEST_ENERGY_OUTPUT_ITEM = ItemMapping.get("TEST_ENERGY_OUTPUT");
 
-        ItemMapping.set("TEST_TOOL", ItemStackUtil.create(Material.IRON_PICKAXE)
-                .setDisplayName(I18n.getLocaleString("item.test_tool.name"))
-                .setLore(I18n.getLocaleStringList("item.test_tool.lore"))
-                .setInstance(TestTool.INSTANCE)
-                .getItemStack());
+        ItemMapping.set("TEST_TOOL",
+                        ItemStackUtil.create(Material.IRON_PICKAXE).setDisplayName(I18n.getLocalePlaceholder(
+                                "item/test_tool/name")).setLore(Collections.singletonList(I18n.getLocaleListPlaceholder(
+                                "item/test_tool/lore"))).setInstance(TestTool.INSTANCE).getItemStack());
         TEST_TOOL = ItemMapping.get("TEST_TOOL");
     }
 }
