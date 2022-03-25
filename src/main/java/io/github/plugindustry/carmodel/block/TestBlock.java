@@ -5,6 +5,7 @@ import io.github.plugindustry.carmodel.utils.ExtendedInteractor;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
+import io.github.plugindustry.wheelcore.interfaces.block.TexturedBlock;
 import io.github.plugindustry.wheelcore.interfaces.block.Wire;
 import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
 import io.github.plugindustry.wheelcore.interfaces.inventory.SlotSize;
@@ -34,7 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, EnergyOutputable {
+public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, EnergyOutputable, TexturedBlock {
     public final static TestBlock INSTANCE = new TestBlock();
     private final Window window;
 
@@ -43,11 +44,9 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
         window = new Window(new SlotSize(9, 1), "Test");
         window.addWidget(new WidgetFixedItem("fixed_1",
                                              ItemStackUtil.create(Material.IRON_INGOT)
-                                                     .setDisplayName("I'm fixed")
+                                                     .displayName("I'm fixed")
                                                      .getItemStack()), new Position(1, 1));
-        window.addWidget(new WidgetButton("button_1",
-                                          ItemStackUtil.create(Material.OAK_SIGN)
-                                                  .setDisplayName("I'm button")
+        window.addWidget(new WidgetButton("button_1", ItemStackUtil.create(Material.OAK_SIGN).displayName("I'm button")
                                                   .getItemStack(),
                                           (pos, info) -> {
                                               info.whoClicked.sendMessage("Hello world!");
@@ -123,6 +122,12 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     @Override
     public boolean finishOutput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
         return true;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getTextureItem(@Nonnull Location location, @Nonnull Player player) {
+        return new ItemStack(Material.DIAMOND_BLOCK);
     }
 
     public static class TestBlockData extends BlockData {

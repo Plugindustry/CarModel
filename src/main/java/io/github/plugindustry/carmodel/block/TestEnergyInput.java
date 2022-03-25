@@ -131,12 +131,10 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
         public TestEnergyInputData() {
             window = new Window(new SlotSize(9, 1), "Test");
             window.addWidget(new WidgetFixedItem("fixed_1",
-                                                 ItemStackUtil.create(Material.REDSTONE)
-                                                         .setDisplayName("Input: 0.0")
+                                                 ItemStackUtil.create(Material.REDSTONE).displayName("Input: 0.0")
                                                          .getItemStack()), new Position(1, 1));
             window.addWidget(new WidgetButton("button_1",
-                                              ItemStackUtil.create(Material.OAK_SIGN)
-                                                      .setDisplayName("Change input")
+                                              ItemStackUtil.create(Material.OAK_SIGN).displayName("Change input")
                                                       .getItemStack(),
                                               (pos, info) -> {
                                                   if (info.whoClicked instanceof Conversable) {
@@ -157,7 +155,7 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
         public void input(double amount) {
             tickInput += amount;
             window.<WidgetFixedItem>getWidget("fixed_1").setItem(ItemStackUtil.create(Material.REDSTONE)
-                                                                         .setDisplayName("Input: " + tickInput)
+                                                                         .displayName("Input: " + tickInput)
                                                                          .getItemStack());
             window.sync();
         }
