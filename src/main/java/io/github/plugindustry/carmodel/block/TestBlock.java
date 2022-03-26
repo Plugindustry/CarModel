@@ -5,6 +5,8 @@ import io.github.plugindustry.carmodel.utils.ExtendedInteractor;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
+import io.github.plugindustry.wheelcore.interfaces.block.PistonPullable;
+import io.github.plugindustry.wheelcore.interfaces.block.PistonPushable;
 import io.github.plugindustry.wheelcore.interfaces.block.TexturedBlock;
 import io.github.plugindustry.wheelcore.interfaces.block.Wire;
 import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
@@ -25,6 +27,7 @@ import io.github.plugindustry.wheelcore.world.multiblock.Relocators;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -33,9 +36,10 @@ import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 
-public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, EnergyOutputable, TexturedBlock {
+public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, EnergyOutputable, TexturedBlock, PistonPushable, PistonPullable {
     public final static TestBlock INSTANCE = new TestBlock();
     private final Window window;
 
@@ -128,6 +132,16 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     @Override
     public ItemStack getTextureItem(@Nonnull Location location, @Nonnull Player player) {
         return new ItemStack(Material.DIAMOND_BLOCK);
+    }
+
+    @Override
+    public boolean onPistonPull(@Nonnull Block block, @Nonnull Block piston, @Nonnull BlockFace direction, @Nonnull List<Block> pulledBlocks) {
+        return true;
+    }
+
+    @Override
+    public boolean onPistonPush(@Nonnull Block block, @Nonnull Block piston, @Nonnull BlockFace direction, @Nonnull List<Block> pushedBlocks) {
+        return true;
     }
 
     public static class TestBlockData extends BlockData {
