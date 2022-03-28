@@ -19,12 +19,7 @@ import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.conversations.Conversable;
-import org.bukkit.conversations.Conversation;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.NumericPrompt;
-import org.bukkit.conversations.Prompt;
+import org.bukkit.conversations.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -96,13 +91,10 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
         return false;
     }
 
+    @Nullable
     @Override
-    public boolean onBlockPlace(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst, @Nullable Player player) {
-        if (super.onBlockPlace(item, block, blockAgainst, player)) {
-            MainManager.setBlockData(block.getLocation(), new TestEnergyInputData());
-            return true;
-        }
-        return false;
+    public BlockData getInitialData(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst, @Nullable Player player) {
+        return new TestEnergyInputData();
     }
 
     @Nonnull

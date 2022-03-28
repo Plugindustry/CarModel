@@ -3,12 +3,7 @@ package io.github.plugindustry.carmodel.block;
 import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.carmodel.utils.ExtendedInteractor;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
-import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
-import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.interfaces.block.PistonPullable;
-import io.github.plugindustry.wheelcore.interfaces.block.PistonPushable;
-import io.github.plugindustry.wheelcore.interfaces.block.TexturedBlock;
-import io.github.plugindustry.wheelcore.interfaces.block.Wire;
+import io.github.plugindustry.wheelcore.interfaces.block.*;
 import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
 import io.github.plugindustry.wheelcore.interfaces.inventory.SlotSize;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
@@ -77,13 +72,10 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
                 .check(Matchers.cube(3, "height", 3, Material.COBBLESTONE)));
     }
 
+    @Nullable
     @Override
-    public boolean onBlockPlace(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst, @Nullable Player player) {
-        if (super.onBlockPlace(item, block, blockAgainst, player)) {
-            MainManager.setBlockData(block.getLocation(), new TestBlockData("test"));
-            return true;
-        }
-        return false;
+    public BlockData getInitialData(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst, @Nullable Player player) {
+        return new TestBlockData("test");
     }
 
     @Nonnull
