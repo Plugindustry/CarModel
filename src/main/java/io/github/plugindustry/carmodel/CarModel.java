@@ -29,9 +29,9 @@ public final class CarModel extends JavaPlugin {
         instance = this;
 
         I18n.load(Locale.SIMPLIFIED_CHINESE,
-                  new InputStreamReader(Objects.requireNonNull(getResource("zh_cn.lang")), StandardCharsets.UTF_8));
+                new InputStreamReader(Objects.requireNonNull(getResource("zh_cn.lang")), StandardCharsets.UTF_8));
         I18n.load(Locale.US,
-                  new InputStreamReader(Objects.requireNonNull(getResource("en_us.lang")), StandardCharsets.UTF_8));
+                new InputStreamReader(Objects.requireNonNull(getResource("en_us.lang")), StandardCharsets.UTF_8));
         MainManager.registerBlock("TEST_BLOCK", TestBlock.INSTANCE);
         MainManager.registerBlock("TEST_WIRE", TestWire.INSTANCE);
         MainManager.registerBlock("TEST_ENERGY_INPUT", TestEnergyInput.INSTANCE);
@@ -41,12 +41,12 @@ public final class CarModel extends JavaPlugin {
         ConstItem.init();
 
         RecipeRegistry.register(ShapedRecipeFactory.create().pattern("aaa", "nsn", "nsn")
-                                        .map('a', ConstItem.TEST_ITEM)
-                                        .map('s', new ItemStack(Material.STICK))
-                                        .build(ConstItem.TEST_TOOL), "cm/test_tool_recipe", false);
+                                                   .map('a', ConstItem.TEST_ITEM)
+                                                   .map('s', new ItemStack(Material.STICK))
+                                                   .build(ConstItem.TEST_TOOL), "cm/test_tool_recipe", false);
         RecipeRegistry.register(new ShapelessRecipe(ConstItem.TEST_ITEM,
-                                                    new ItemStack(Material.IRON_INGOT),
-                                                    new ItemStack(Material.DIAMOND)), "cm/test_item_recipe");
+                new ItemStack(Material.IRON_INGOT),
+                new ItemStack(Material.DIAMOND)), "cm/test_item_recipe");
         RecipeRegistry.updatePlaceholders();
     }
 

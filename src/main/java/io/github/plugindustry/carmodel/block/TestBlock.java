@@ -42,34 +42,39 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     private TestBlock() {
         window = new Window(new SlotSize(9, 1), "Test");
         window.addWidget(new WidgetFixedItem("fixed_1",
-                                             ItemStackUtil.create(Material.IRON_INGOT)
-                                                     .displayName("I'm fixed")
-                                                     .getItemStack()), new Position(1, 1));
+                ItemStackUtil.create(Material.IRON_INGOT)
+                             .displayName("I'm fixed")
+                             .getItemStack()), new Position(1, 1));
         window.addWidget(new WidgetButton("button_1", ItemStackUtil.create(Material.OAK_SIGN).displayName("I'm button")
-                                                  .getItemStack(),
-                                          (pos, info) -> {
-                                              info.whoClicked.sendMessage("Hello world!");
-                                              PlayerUtil.sendActionBar((Player) info.whoClicked, "Test");
-                                              TestBlockData data = ((ExtendedInteractor<TestBlockData>) Objects.requireNonNull(
-                                                      info.inventory.getHolder())).extend;
-                                              info.whoClicked.sendMessage("Data: " + data.test);
+                                                                   .getItemStack(),
+                (pos, info) -> {
+                    info.whoClicked.sendMessage("Hello world!");
+                    PlayerUtil.sendActionBar((Player) info.whoClicked, "Test");
+                    TestBlockData data = ((ExtendedInteractor<TestBlockData>) Objects.requireNonNull(
+                            info.inventory.getHolder())).extend;
+                    info.whoClicked.sendMessage("Data: " + data.test);
 
-                                              MultiBlockManager.getAvailableStructures(this)
-                                                      .stream()
-                                                      .map(MultiBlockManager::getStructureData)
-                                                      .map(env -> env.<Integer>getEnvironmentArg("height"))
-                                                      .forEach(i -> info.whoClicked.sendMessage(String.valueOf(i)));
+                    MultiBlockManager.getAvailableStructures(this)
+                                     .stream()
+                                     .map(MultiBlockManager::getStructureData)
+                                     .map(env -> env.<Integer>getEnvironmentArg("height"))
+                                     .forEach(i -> info.whoClicked.sendMessage(String.valueOf(i)));
 
-                                              data.attr = !data.attr;
-                                              info.whoClicked.sendMessage("Attr: " + data.attr);
-                                          }), new Position(2, 1));
+                    data.attr = !data.attr;
+                    info.whoClicked.sendMessage("Attr: " + data.attr);
+                }), new Position(2, 1));
 
         MultiBlockManager.register(this, MultiBlockManager.Conditions.create()
-                .then(Relocators.move(0, 1, 0))
-                .then(Definers.scan("height", new Vector(0, 1, 0), Material.COBBLESTONE, 16))
-                .check(env -> env.<Integer>getEnvironmentArg("height") >= 5)
-                .then(env -> env.setEnvironmentArg("height", env.<Integer>getEnvironmentArg("height") - 1))
-                .check(Matchers.cube(3, "height", 3, Material.COBBLESTONE)));
+                                                                     .then(Relocators.move(0, 1, 0))
+                                                                     .then(Definers.scan("height", new Vector(0, 1, 0),
+                                                                             Material.COBBLESTONE, 16))
+                                                                     .check(env -> env.<Integer>getEnvironmentArg(
+                                                                             "height") >= 5)
+                                                                     .then(env -> env.setEnvironmentArg("height",
+                                                                             env.<Integer>getEnvironmentArg(
+                                                                                     "height") - 1))
+                                                                     .check(Matchers.cube(3, "height", 3,
+                                                                             Material.COBBLESTONE)));
     }
 
     @Nullable
@@ -94,8 +99,9 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
         if (super.onInteract(player, action, tool, block, entity)) {
             if (action == Action.RIGHT_CLICK_BLOCK)
-                player.openInventory(((TestBlockData) Objects.requireNonNull(MainManager.getBlockData(Objects.requireNonNull(
-                        block).getLocation()))).interactor.getInventory());
+                player.openInventory(
+                        ((TestBlockData) Objects.requireNonNull(MainManager.getBlockData(Objects.requireNonNull(
+                                block).getLocation()))).interactor.getInventory());
             return true;
         }
         return false;
@@ -113,7 +119,8 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     }
 
     @Override
-    public void finishInput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {}
+    public void finishInput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
+    }
 
     @Override
     public boolean finishOutput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
@@ -138,11 +145,12 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
 
     public static class TestBlockData extends BlockData {
         private transient final ExtendedInteractor<TestBlockData> interactor = new ExtendedInteractor<>(INSTANCE.window,
-                                                                                                        this);
+                this);
         public String test = "test";
         public boolean attr = false;
 
-        public TestBlockData() {}
+        public TestBlockData() {
+        }
 
         public TestBlockData(String test) {
             this.test = test;

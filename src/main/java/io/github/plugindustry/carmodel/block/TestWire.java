@@ -10,7 +10,8 @@ import javax.annotation.Nonnull;
 public class TestWire extends Wire {
     public final static TestWire INSTANCE = new TestWire();
 
-    private TestWire() {}
+    private TestWire() {
+    }
 
     @Nonnull
     @Override

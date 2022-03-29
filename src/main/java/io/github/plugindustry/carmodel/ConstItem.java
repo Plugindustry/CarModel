@@ -44,23 +44,23 @@ public final class ConstItem {
         instance = new DummyBlockItem();
         MainManager.registerItem("TEST_ENERGY_INPUT", instance);
         ItemMapping.set("TEST_ENERGY_INPUT",
-                        ItemStackUtil.create(Material.IRON_BLOCK)
-                                .displayName(I18n.getLocalePlaceholder("item/test_energy_input/name"))
-                                .lore(Collections.singletonList(I18n.getLocaleListPlaceholder(
-                                        "item/test_energy_input/lore")))
-                                .instance(instance)
-                                .getItemStack());
+                ItemStackUtil.create(Material.IRON_BLOCK)
+                             .displayName(I18n.getLocalePlaceholder("item/test_energy_input/name"))
+                             .lore(Collections.singletonList(I18n.getLocaleListPlaceholder(
+                                     "item/test_energy_input/lore")))
+                             .instance(instance)
+                             .getItemStack());
         TEST_ENERGY_INPUT_ITEM = ItemMapping.get("TEST_ENERGY_INPUT");
 
         instance = new DummyBlockItem();
         MainManager.registerItem("TEST_ENERGY_OUTPUT", instance);
         ItemMapping.set("TEST_ENERGY_OUTPUT",
-                        ItemStackUtil.create(Material.REDSTONE_BLOCK)
-                                .displayName(I18n.getLocalePlaceholder("item/test_energy_output/name"))
-                                .lore(Collections.singletonList(I18n.getLocaleListPlaceholder(
-                                        "item/test_energy_output/lore")))
-                                .instance(instance)
-                                .getItemStack());
+                ItemStackUtil.create(Material.REDSTONE_BLOCK)
+                             .displayName(I18n.getLocalePlaceholder("item/test_energy_output/name"))
+                             .lore(Collections.singletonList(I18n.getLocaleListPlaceholder(
+                                     "item/test_energy_output/lore")))
+                             .instance(instance)
+                             .getItemStack());
         TEST_ENERGY_OUTPUT_ITEM = ItemMapping.get("TEST_ENERGY_OUTPUT");
 
         ItemMapping.set("TEST_TOOL", ItemStackUtil.create(Material.IRON_PICKAXE).displayName(I18n.getLocalePlaceholder(

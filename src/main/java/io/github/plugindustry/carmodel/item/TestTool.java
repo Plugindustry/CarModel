@@ -14,7 +14,8 @@ import java.util.Optional;
 public class TestTool extends DummyTool {
     public final static TestTool INSTANCE = new TestTool();
 
-    private TestTool() {}
+    private TestTool() {
+    }
 
     @Override
     public float getToolBonus(@Nonnull Block block, @Nonnull ItemStack tool) {
