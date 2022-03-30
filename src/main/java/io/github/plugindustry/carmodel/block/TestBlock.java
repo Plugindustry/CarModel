@@ -26,6 +26,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -96,8 +97,8 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     }
 
     @Override
-    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
-        if (super.onInteract(player, action, tool, block, entity)) {
+    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
+        if (super.onInteract(player, action, hand, tool, block, entity)) {
             if (action == Action.RIGHT_CLICK_BLOCK)
                 player.openInventory(
                         ((TestBlockData) Objects.requireNonNull(MainManager.getBlockData(Objects.requireNonNull(

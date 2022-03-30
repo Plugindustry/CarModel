@@ -23,6 +23,7 @@ import org.bukkit.conversations.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -90,8 +91,8 @@ public class TestEnergyOutput extends DummyBlock implements Tickable, EnergyOutp
     }
 
     @Override
-    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
-        if (super.onInteract(player, action, tool, block, entity)) {
+    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
+        if (super.onInteract(player, action, hand, tool, block, entity)) {
             if (action == Action.RIGHT_CLICK_BLOCK)
                 player.openInventory(
                         ((TestEnergyOutputData) Objects.requireNonNull(MainManager.getBlockData(Objects.requireNonNull(
