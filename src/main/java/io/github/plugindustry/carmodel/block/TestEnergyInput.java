@@ -36,26 +36,33 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     private TestEnergyInput() {
         this.conversationFactory = new ConversationFactory(CarModel.instance).withModality(true)
-                                                                             .withFirstPrompt(new NumericPrompt() {
-                                                                                 @Override
-                                                                                 protected @Nullable
-                                                                                 Prompt acceptValidatedInput(@Nonnull ConversationContext context, @Nonnull Number input) {
-                                                                                     context.setSessionData("amount",
-                                                                                             input.doubleValue());
-                                                                                     return Prompt.END_OF_CONVERSATION;
-                                                                                 }
+                                                                             .withFirstPrompt(
+                                                                                     new NumericPrompt() {
+                                                                                         @Override
+                                                                                         protected @Nullable
+                                                                                         Prompt acceptValidatedInput(
+                                                                                                 @Nonnull ConversationContext context,
+                                                                                                 @Nonnull Number input) {
+                                                                                             context.setSessionData(
+                                                                                                     "amount",
+                                                                                                     input.doubleValue());
+                                                                                             return Prompt.END_OF_CONVERSATION;
+                                                                                         }
 
-                                                                                 @Override
-                                                                                 protected boolean isNumberValid(@Nonnull ConversationContext context, @Nonnull Number input) {
-                                                                                     return input.doubleValue() >= 0.0;
-                                                                                 }
+                                                                                         @Override
+                                                                                         protected boolean isNumberValid(
+                                                                                                 @Nonnull ConversationContext context,
+                                                                                                 @Nonnull Number input) {
+                                                                                             return input.doubleValue() >= 0.0;
+                                                                                         }
 
-                                                                                 @Override
-                                                                                 public @Nonnull
-                                                                                 String getPromptText(@Nonnull ConversationContext context) {
-                                                                                     return "Input amount: ";
-                                                                                 }
-                                                                             })
+                                                                                         @Override
+                                                                                         public @Nonnull
+                                                                                         String getPromptText(
+                                                                                                 @Nonnull ConversationContext context) {
+                                                                                             return "Input amount: ";
+                                                                                         }
+                                                                                     })
                                                                              .withEscapeSequence("/cancel")
                                                                              .withTimeout(10)
                                                                              .thatExcludesNonPlayersWithMessage(
@@ -71,10 +78,9 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
                                                                                              abandonedEvent.getContext()
                                                                                                            .getForWhom()
                                                                                                            .sendRawMessage(
-                                                                                                                   "Conversation abandoned by" +
-                                                                                                                           abandonedEvent.getCanceller()
-                                                                                                                                         .getClass()
-                                                                                                                                         .getName());
+                                                                                                                   "Conversation abandoned by" + abandonedEvent.getCanceller()
+                                                                                                                                                               .getClass()
+                                                                                                                                                               .getName());
                                                                                      });
     }
 
@@ -85,18 +91,16 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
             Objects.requireNonNull(temp).input(-temp.tickInput);
         });
         MainManager.blockDataProvider.blocksOf(this).forEach(block -> PowerManager.inputPower(block,
-                ((TestEnergyInputData) Objects.requireNonNull(
-                        MainManager.getBlockData(
-                                block))).expectInput));
+                ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(block))).expectInput));
     }
 
     @Override
-    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand, @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
+    public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand,
+                              @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
         if (super.onInteract(player, action, hand, tool, block, entity)) {
-            if (action == Action.RIGHT_CLICK_BLOCK)
-                player.openInventory(
-                        ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(Objects.requireNonNull(
-                                block).getLocation()))).interactor.getInventory());
+            if (action == Action.RIGHT_CLICK_BLOCK) player.openInventory(
+                    ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(
+                            Objects.requireNonNull(block).getLocation()))).interactor.getInventory());
             return true;
         }
         return false;
@@ -104,7 +108,8 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     @Nullable
     @Override
-    public BlockData getInitialData(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst, @Nullable Player player) {
+    public BlockData getInitialData(@Nullable ItemStack item, @Nonnull Block block,
+                                    @Nullable Block blockAgainst, @Nullable Player player) {
         return new TestEnergyInputData();
     }
 
@@ -134,19 +139,17 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
         public TestEnergyInputData() {
             window = new Window(new SlotSize(9, 1), "Test");
             window.addWidget(new WidgetFixedItem("fixed_1",
-                    ItemStackUtil.create(Material.REDSTONE).displayName("Input: 0.0")
-                                 .getItemStack()), new Position(1, 1));
+                            ItemStackUtil.create(Material.REDSTONE).displayName("Input: 0.0").getItemStack()),
+                    new Position(1, 1));
             window.addWidget(new WidgetButton("button_1",
-                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change input")
-                                 .getItemStack(),
+                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change input").getItemStack(),
                     (pos, info) -> {
                         if (info.whoClicked instanceof Conversable) {
                             Conversation conversation = INSTANCE.conversationFactory.buildConversation(
                                     (Conversable) info.whoClicked);
                             conversation.addConversationAbandonedListener(abandonedEvent -> {
-                                if (abandonedEvent.gracefulExit())
-                                    expectInput = (Double) abandonedEvent.getContext()
-                                                                         .getSessionData("amount");
+                                if (abandonedEvent.gracefulExit()) expectInput =
+                                        (Double) abandonedEvent.getContext().getSessionData("amount");
                             });
                             conversation.begin();
                         }
@@ -157,9 +160,9 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
         public void input(double amount) {
             tickInput += amount;
-            window.<WidgetFixedItem>getWidget("fixed_1").setItem(ItemStackUtil.create(Material.REDSTONE)
-                                                                              .displayName("Input: " + tickInput)
-                                                                              .getItemStack());
+            window.<WidgetFixedItem>getWidget("fixed_1").setItem(
+                    ItemStackUtil.create(Material.REDSTONE).displayName("Input: " + tickInput)
+                                 .getItemStack());
             window.sync();
         }
     }
