@@ -36,52 +36,30 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     private TestEnergyInput() {
         this.conversationFactory = new ConversationFactory(CarModel.instance).withModality(true)
-                                                                             .withFirstPrompt(
-                                                                                     new NumericPrompt() {
-                                                                                         @Override
-                                                                                         protected @Nullable
-                                                                                         Prompt acceptValidatedInput(
-                                                                                                 @Nonnull ConversationContext context,
-                                                                                                 @Nonnull Number input) {
-                                                                                             context.setSessionData(
-                                                                                                     "amount",
-                                                                                                     input.doubleValue());
-                                                                                             return Prompt.END_OF_CONVERSATION;
-                                                                                         }
+                .withFirstPrompt(new NumericPrompt() {
+                    @Override
+                    protected @Nullable
+                    Prompt acceptValidatedInput(@Nonnull ConversationContext context, @Nonnull Number input) {
+                        context.setSessionData("amount", input.doubleValue());
+                        return Prompt.END_OF_CONVERSATION;
+                    }
 
-                                                                                         @Override
-                                                                                         protected boolean isNumberValid(
-                                                                                                 @Nonnull ConversationContext context,
-                                                                                                 @Nonnull Number input) {
-                                                                                             return input.doubleValue() >= 0.0;
-                                                                                         }
+                    @Override
+                    protected boolean isNumberValid(@Nonnull ConversationContext context, @Nonnull Number input) {
+                        return input.doubleValue() >= 0.0;
+                    }
 
-                                                                                         @Override
-                                                                                         public @Nonnull
-                                                                                         String getPromptText(
-                                                                                                 @Nonnull ConversationContext context) {
-                                                                                             return "Input amount: ";
-                                                                                         }
-                                                                                     })
-                                                                             .withEscapeSequence("/cancel")
-                                                                             .withTimeout(10)
-                                                                             .thatExcludesNonPlayersWithMessage(
-                                                                                     "Illegal State.")
-                                                                             .addConversationAbandonedListener(
-                                                                                     abandonedEvent -> {
-                                                                                         if (abandonedEvent.gracefulExit())
-                                                                                             abandonedEvent.getContext()
-                                                                                                           .getForWhom()
-                                                                                                           .sendRawMessage(
-                                                                                                                   "Done.");
-                                                                                         else
-                                                                                             abandonedEvent.getContext()
-                                                                                                           .getForWhom()
-                                                                                                           .sendRawMessage(
-                                                                                                                   "Conversation abandoned by" + abandonedEvent.getCanceller()
-                                                                                                                                                               .getClass()
-                                                                                                                                                               .getName());
-                                                                                     });
+                    @Override
+                    public @Nonnull
+                    String getPromptText(@Nonnull ConversationContext context) {
+                        return "Input amount: ";
+                    }
+                }).withEscapeSequence("/cancel").withTimeout(10).thatExcludesNonPlayersWithMessage("Illegal State.")
+                .addConversationAbandonedListener(abandonedEvent -> {
+                    if (abandonedEvent.gracefulExit()) abandonedEvent.getContext().getForWhom().sendRawMessage("Done.");
+                    else abandonedEvent.getContext().getForWhom().sendRawMessage("Conversation abandoned by" +
+                            Objects.requireNonNull(abandonedEvent.getCanceller()).getClass().getName());
+                });
     }
 
     @Override
@@ -96,11 +74,10 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     @Override
     public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand,
-                              @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
+            @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
         if (super.onInteract(player, action, hand, tool, block, entity)) {
-            if (action == Action.RIGHT_CLICK_BLOCK) player.openInventory(
-                    ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(
-                            Objects.requireNonNull(block).getLocation()))).interactor.getInventory());
+            if (action == Action.RIGHT_CLICK_BLOCK) player.openInventory(((TestEnergyInputData) Objects.requireNonNull(
+                    MainManager.getBlockData(Objects.requireNonNull(block).getLocation()))).interactor.getInventory());
             return true;
         }
         return false;
@@ -108,8 +85,8 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     @Nullable
     @Override
-    public BlockData getInitialData(@Nullable ItemStack item, @Nonnull Block block,
-                                    @Nullable Block blockAgainst, @Nullable Player player) {
+    public BlockData getInitialData(@Nullable ItemStack item, @Nonnull Block block, @Nullable Block blockAgainst,
+            @Nullable Player player) {
         return new TestEnergyInputData();
     }
 
@@ -142,27 +119,25 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
                             ItemStackUtil.create(Material.REDSTONE).displayName("Input: 0.0").getItemStack()),
                     new Position(1, 1));
             window.addWidget(new WidgetButton("button_1",
-                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change input").getItemStack(),
-                    (pos, info) -> {
-                        if (info.whoClicked instanceof Conversable) {
-                            Conversation conversation = INSTANCE.conversationFactory.buildConversation(
-                                    (Conversable) info.whoClicked);
-                            conversation.addConversationAbandonedListener(abandonedEvent -> {
-                                if (abandonedEvent.gracefulExit()) expectInput =
-                                        (Double) abandonedEvent.getContext().getSessionData("amount");
-                            });
-                            conversation.begin();
-                        }
-                    }), new Position(2, 1));
+                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change input").getItemStack(), (pos, info) -> {
+                if (info.whoClicked instanceof Conversable) {
+                    Conversation conversation = INSTANCE.conversationFactory.buildConversation(
+                            (Conversable) info.whoClicked);
+                    conversation.addConversationAbandonedListener(abandonedEvent -> {
+                        if (abandonedEvent.gracefulExit()) expectInput = (Double) Objects.requireNonNull(
+                                abandonedEvent.getContext().getSessionData("amount"));
+                    });
+                    conversation.begin();
+                }
+            }), new Position(2, 1));
 
             interactor = new ClassicInventoryInteractor(window);
         }
 
         public void input(double amount) {
             tickInput += amount;
-            window.<WidgetFixedItem>getWidget("fixed_1").setItem(
-                    ItemStackUtil.create(Material.REDSTONE).displayName("Input: " + tickInput)
-                                 .getItemStack());
+            window.<WidgetFixedItem>getWidget("fixed_1")
+                    .setItem(ItemStackUtil.create(Material.REDSTONE).displayName("Input: " + tickInput).getItemStack());
             window.sync();
         }
     }

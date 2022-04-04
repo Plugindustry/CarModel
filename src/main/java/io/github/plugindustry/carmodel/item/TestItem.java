@@ -17,7 +17,7 @@ public class TestItem extends DummyItem implements Tickable {
     @Override
     public void onTick() {
         Bukkit.getOnlinePlayers().stream()
-              .filter(p -> ItemStackUtil.isSimilar(p.getInventory().getItemInMainHand(), ConstItem.TEST_ITEM))
-              .forEach(p -> p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 20, 0)));
+                .filter(p -> ItemStackUtil.isSimilar(p.getInventory().getItemInMainHand(), ConstItem.TEST_ITEM))
+                .forEach(p -> p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 20, 0)));
     }
 }

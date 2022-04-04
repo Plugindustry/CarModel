@@ -24,8 +24,7 @@ public class TestTool extends DummyTool {
 
     @Override
     public boolean isSuitable(@Nonnull Block block, @Nonnull ItemStack tool) {
-        return block.getType() == Material.OBSIDIAN && MainManager.getBlockInstance(
-                block.getLocation()) == null;
+        return block.getType() == Material.OBSIDIAN && MainManager.getBlockInstance(block.getLocation()) == null;
     }
 
     @Nonnull
