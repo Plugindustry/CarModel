@@ -1,18 +1,14 @@
 package io.github.plugindustry.carmodel.block;
 
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import io.github.plugindustry.carmodel.CarModel;
 import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
 import io.github.plugindustry.wheelcore.interfaces.block.Wire;
-import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
-import io.github.plugindustry.wheelcore.interfaces.inventory.SlotSize;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
-import io.github.plugindustry.wheelcore.inventory.ClassicInventoryInteractor;
-import io.github.plugindustry.wheelcore.inventory.Window;
-import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
-import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
 import io.github.plugindustry.wheelcore.manager.MainManager;
 import io.github.plugindustry.wheelcore.manager.PowerManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
@@ -76,8 +72,8 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
     public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand,
             @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
         if (super.onInteract(player, action, hand, tool, block, entity)) {
-            if (action == Action.RIGHT_CLICK_BLOCK) player.openInventory(((TestEnergyInputData) Objects.requireNonNull(
-                    MainManager.getBlockData(Objects.requireNonNull(block).getLocation()))).interactor.getInventory());
+            if (action == Action.RIGHT_CLICK_BLOCK) ((TestEnergyInputData) Objects.requireNonNull(
+                    MainManager.getBlockData(Objects.requireNonNull(block).getLocation()))).window.show(player);
             return true;
         }
         return false;
@@ -108,37 +104,39 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
     }
 
     public static class TestEnergyInputData extends BlockData {
-        public transient final ClassicInventoryInteractor interactor;
-        private transient final Window window;
+        private transient final InventoryGui window;
         public double tickInput = 0.0;
         public double expectInput = Double.MAX_VALUE;
 
         public TestEnergyInputData() {
-            window = new Window(new SlotSize(9, 1), "Test");
-            window.addWidget(new WidgetFixedItem("fixed_1",
-                            ItemStackUtil.create(Material.REDSTONE).displayName("Input: 0.0").getItemStack()),
-                    new Position(1, 1));
-            window.addWidget(new WidgetButton("button_1",
-                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change input").getItemStack(), (pos, info) -> {
-                if (info.whoClicked instanceof Conversable) {
+            window = new InventoryGui(CarModel.instance, null, "Test", new String[]{"fb   "});
+            window.addElement(new StaticGuiElement('f',
+                    ItemStackUtil.create(Material.REDSTONE).displayName("Input: 0.0").getItemStack()));
+            window.addElement(new StaticGuiElement('b',
+                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change input").getItemStack(), (click) -> {
+                if (click.getWhoClicked() instanceof Conversable) {
                     Conversation conversation = INSTANCE.conversationFactory.buildConversation(
-                            (Conversable) info.whoClicked);
+                            (Conversable) click.getWhoClicked());
                     conversation.addConversationAbandonedListener(abandonedEvent -> {
                         if (abandonedEvent.gracefulExit()) expectInput = (Double) Objects.requireNonNull(
                                 abandonedEvent.getContext().getSessionData("amount"));
                     });
                     conversation.begin();
                 }
-            }), new Position(2, 1));
-
-            interactor = new ClassicInventoryInteractor(window);
+                return true;
+            }));
         }
 
         public void input(double amount) {
             tickInput += amount;
-            window.<WidgetFixedItem>getWidget("fixed_1")
-                    .setItem(ItemStackUtil.create(Material.REDSTONE).displayName("Input: " + tickInput).getItemStack());
-            window.sync();
+            ((StaticGuiElement) window.getElement('f')).setItem(
+                    ItemStackUtil.create(Material.REDSTONE).displayName("Input: " + tickInput).getItemStack());
+            window.draw();
+        }
+
+        @Override
+        public void unload() {
+            window.close();
         }
     }
 }

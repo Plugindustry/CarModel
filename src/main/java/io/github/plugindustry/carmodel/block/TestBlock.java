@@ -1,16 +1,13 @@
 package io.github.plugindustry.carmodel.block;
 
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
+import io.github.plugindustry.carmodel.CarModel;
 import io.github.plugindustry.carmodel.ConstItem;
-import io.github.plugindustry.carmodel.utils.ExtendedInteractor;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.*;
-import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
-import io.github.plugindustry.wheelcore.interfaces.inventory.SlotSize;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyOutputable;
-import io.github.plugindustry.wheelcore.inventory.Window;
-import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
-import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
 import io.github.plugindustry.wheelcore.manager.MainManager;
 import io.github.plugindustry.wheelcore.manager.MultiBlockManager;
 import io.github.plugindustry.wheelcore.manager.PowerManager;
@@ -38,29 +35,8 @@ import java.util.Objects;
 public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, EnergyOutputable, TexturedBlock,
         PistonPushable, PistonPullable {
     public final static TestBlock INSTANCE = new TestBlock();
-    private final Window window;
 
-    @SuppressWarnings("unchecked")
     private TestBlock() {
-        window = new Window(new SlotSize(9, 1), "Test");
-        window.addWidget(new WidgetFixedItem("fixed_1",
-                ItemStackUtil.create(Material.IRON_INGOT).displayName("I'm fixed").getItemStack()), new Position(1, 1));
-        window.addWidget(new WidgetButton("button_1",
-                ItemStackUtil.create(Material.OAK_SIGN).displayName("I'm button").getItemStack(), (pos, info) -> {
-            info.whoClicked.sendMessage("Hello world!");
-            PlayerUtil.sendActionBar((Player) info.whoClicked, "Test");
-            TestBlockData data = ((ExtendedInteractor<TestBlockData>) Objects.requireNonNull(
-                    info.inventory.getHolder())).extend;
-            info.whoClicked.sendMessage("Data: " + data.test);
-
-            MultiBlockManager.getAvailableStructures(this).stream().map(MultiBlockManager::getStructureData)
-                    .map(env -> env.<Integer>getEnvironmentArg("height"))
-                    .forEach(i -> info.whoClicked.sendMessage(String.valueOf(i)));
-
-            data.attr = !data.attr;
-            info.whoClicked.sendMessage("Attr: " + data.attr);
-        }), new Position(2, 1));
-
         MultiBlockManager.register(this, MultiBlockManager.Conditions.create().then(Relocators.move(0, 1, 0))
                 .then(Definers.scan("height", new Vector(0, 1, 0), Material.COBBLESTONE, 16))
                 .check(env -> env.<Integer>getEnvironmentArg("height") >= 5)
@@ -91,8 +67,8 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand,
             @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
         if (super.onInteract(player, action, hand, tool, block, entity)) {
-            if (action == Action.RIGHT_CLICK_BLOCK) player.openInventory(((TestBlockData) Objects.requireNonNull(
-                    MainManager.getBlockData(Objects.requireNonNull(block).getLocation()))).interactor.getInventory());
+            if (action == Action.RIGHT_CLICK_BLOCK) ((TestBlockData) Objects.requireNonNull(
+                    MainManager.getBlockData(Objects.requireNonNull(block).getLocation()))).window.show(player);
             return true;
         }
         return false;
@@ -135,16 +111,38 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     }
 
     public static class TestBlockData extends BlockData {
-        private transient final ExtendedInteractor<TestBlockData> interactor = new ExtendedInteractor<>(INSTANCE.window,
-                this);
+        private transient final InventoryGui window;
         public String test = "test";
         public boolean attr = false;
 
         public TestBlockData() {
+            window = new InventoryGui(CarModel.instance, null, "Test", new String[]{"fb   "});
+            window.addElement(new StaticGuiElement('f',
+                    ItemStackUtil.create(Material.IRON_INGOT).displayName("I'm fixed").getItemStack()));
+            window.addElement(new StaticGuiElement('b',
+                    ItemStackUtil.create(Material.OAK_SIGN).displayName("I'm button").getItemStack(), (click) -> {
+                click.getWhoClicked().sendMessage("Hello world!");
+                PlayerUtil.sendActionBar((Player) click.getWhoClicked(), "Test");
+                click.getWhoClicked().sendMessage("Data: " + test);
+
+                MultiBlockManager.getAvailableStructures(TestBlock.INSTANCE).stream()
+                        .map(MultiBlockManager::getStructureData).map(env -> env.<Integer>getEnvironmentArg("height"))
+                        .forEach(i -> click.getWhoClicked().sendMessage(String.valueOf(i)));
+
+                attr = !attr;
+                click.getWhoClicked().sendMessage("Attr: " + attr);
+                return true;
+            }));
         }
 
         public TestBlockData(String test) {
+            this();
             this.test = test;
+        }
+
+        @Override
+        public void unload() {
+            window.close();
         }
     }
 }

@@ -1,18 +1,14 @@
 package io.github.plugindustry.carmodel.block;
 
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import io.github.plugindustry.carmodel.CarModel;
 import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
 import io.github.plugindustry.wheelcore.interfaces.block.Wire;
-import io.github.plugindustry.wheelcore.interfaces.inventory.Position;
-import io.github.plugindustry.wheelcore.interfaces.inventory.SlotSize;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyOutputable;
-import io.github.plugindustry.wheelcore.inventory.ClassicInventoryInteractor;
-import io.github.plugindustry.wheelcore.inventory.Window;
-import io.github.plugindustry.wheelcore.inventory.widget.WidgetButton;
-import io.github.plugindustry.wheelcore.inventory.widget.WidgetFixedItem;
 import io.github.plugindustry.wheelcore.manager.MainManager;
 import io.github.plugindustry.wheelcore.manager.PowerManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
@@ -76,8 +72,8 @@ public class TestEnergyOutput extends DummyBlock implements Tickable, EnergyOutp
     public boolean onInteract(@Nonnull Player player, @Nonnull Action action, @Nullable EquipmentSlot hand,
             @Nullable ItemStack tool, @Nullable Block block, @Nullable Entity entity) {
         if (super.onInteract(player, action, hand, tool, block, entity)) {
-            if (action == Action.RIGHT_CLICK_BLOCK) player.openInventory(((TestEnergyOutputData) Objects.requireNonNull(
-                    MainManager.getBlockData(Objects.requireNonNull(block).getLocation()))).interactor.getInventory());
+            if (action == Action.RIGHT_CLICK_BLOCK) ((TestEnergyOutputData) Objects.requireNonNull(
+                    MainManager.getBlockData(Objects.requireNonNull(block).getLocation()))).window.show(player);
             return true;
         }
         return false;
@@ -109,38 +105,39 @@ public class TestEnergyOutput extends DummyBlock implements Tickable, EnergyOutp
     }
 
     public static class TestEnergyOutputData extends BlockData {
-        public transient final ClassicInventoryInteractor interactor;
-        private transient final Window window;
+        private transient final InventoryGui window;
         public double tickOutput = 0.0;
         public double expectOutput = 0.0;
 
         public TestEnergyOutputData() {
-            window = new Window(new SlotSize(9, 1), "Test");
-            window.addWidget(new WidgetFixedItem("fixed_1",
-                            ItemStackUtil.create(Material.REDSTONE).displayName("Output: 0.0").getItemStack()),
-                    new Position(1, 1));
-            window.addWidget(new WidgetButton("button_1",
-                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change output").getItemStack(),
-                    (pos, info) -> {
-                        if (info.whoClicked instanceof Conversable) {
-                            Conversation conversation = INSTANCE.conversationFactory.buildConversation(
-                                    (Conversable) info.whoClicked);
-                            conversation.addConversationAbandonedListener(abandonedEvent -> {
-                                if (abandonedEvent.gracefulExit()) expectOutput = (Double) Objects.requireNonNull(
-                                        abandonedEvent.getContext().getSessionData("amount"));
-                            });
-                            conversation.begin();
-                        }
-                    }), new Position(2, 1));
-
-            interactor = new ClassicInventoryInteractor(window);
+            window = new InventoryGui(CarModel.instance, null, "Test", new String[]{"fb   "});
+            window.addElement(new StaticGuiElement('f',
+                    ItemStackUtil.create(Material.REDSTONE).displayName("Output: 0.0").getItemStack()));
+            window.addElement(new StaticGuiElement('b',
+                    ItemStackUtil.create(Material.OAK_SIGN).displayName("Change output").getItemStack(), (click) -> {
+                if (click.getWhoClicked() instanceof Conversable) {
+                    Conversation conversation = INSTANCE.conversationFactory.buildConversation(
+                            (Conversable) click.getWhoClicked());
+                    conversation.addConversationAbandonedListener(abandonedEvent -> {
+                        if (abandonedEvent.gracefulExit()) expectOutput = (Double) Objects.requireNonNull(
+                                abandonedEvent.getContext().getSessionData("amount"));
+                    });
+                    conversation.begin();
+                }
+                return true;
+            }));
         }
 
         public void output(double amount) {
             tickOutput += amount;
-            window.<WidgetFixedItem>getWidget("fixed_1").setItem(
+            ((StaticGuiElement) window.getElement('f')).setItem(
                     ItemStackUtil.create(Material.REDSTONE).displayName("Output: " + tickOutput).getItemStack());
-            window.sync();
+            window.draw();
+        }
+
+        @Override
+        public void unload() {
+            window.close();
         }
     }
 }
