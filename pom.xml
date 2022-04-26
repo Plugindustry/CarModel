@@ -48,9 +48,8 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>bukkit-rip-snapshots</id>
-            <name>Bukkit.RIP</name>
-            <url>https://mvn.bukkit.rip/snapshots</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -67,9 +66,9 @@
             <version>3.0.2</version>
         </dependency>
         <dependency>
-            <groupId>io.github.plugindustry.wheelcore</groupId>
+            <groupId>com.github.Plugindustry</groupId>
             <artifactId>WheelCore</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>master-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
