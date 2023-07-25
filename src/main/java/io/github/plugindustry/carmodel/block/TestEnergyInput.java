@@ -7,10 +7,8 @@ import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.interfaces.block.Wire;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
 import io.github.plugindustry.wheelcore.manager.MainManager;
-import io.github.plugindustry.wheelcore.manager.PowerManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -64,8 +62,6 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
             TestEnergyInputData temp = (TestEnergyInputData) data;
             Objects.requireNonNull(temp).input(-temp.tickInput);
         });
-        MainManager.blockDataProvider.blocksOf(this).forEach(block -> PowerManager.inputPower(block,
-                ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(block))).expectInput));
     }
 
     @Override
@@ -99,8 +95,18 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
     }
 
     @Override
-    public void finishInput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
-        ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(block))).input(packet.amount);
+    public double demand(@Nonnull Location block) {
+        return Double.MAX_VALUE;
+    }
+
+    @Override
+    public void input(@Nonnull Location block, double amount) {
+        ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(block))).input(amount);
+    }
+
+    @Override
+    public boolean available(@Nonnull Location loc) {
+        return true;
     }
 
     public static class TestEnergyInputData extends BlockData {

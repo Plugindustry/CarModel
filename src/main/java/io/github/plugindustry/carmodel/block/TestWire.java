@@ -1,7 +1,7 @@
 package io.github.plugindustry.carmodel.block;
 
 import io.github.plugindustry.carmodel.ConstItem;
-import io.github.plugindustry.wheelcore.interfaces.block.Wire;
+import io.github.plugindustry.wheelcore.interfaces.power.Wire;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

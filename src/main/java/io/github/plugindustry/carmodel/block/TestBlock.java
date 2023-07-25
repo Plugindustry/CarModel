@@ -8,9 +8,9 @@ import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.*;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyOutputable;
+import io.github.plugindustry.wheelcore.interfaces.power.EnergyPacket;
 import io.github.plugindustry.wheelcore.manager.MainManager;
 import io.github.plugindustry.wheelcore.manager.MultiBlockManager;
-import io.github.plugindustry.wheelcore.manager.PowerManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import io.github.plugindustry.wheelcore.utils.PlayerUtil;
 import io.github.plugindustry.wheelcore.world.multiblock.Definers;
@@ -78,17 +78,16 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     public void onTick() {
         MainManager.blockDataProvider.blocksOf(this).forEach(block -> {
             TestBlockData data = (TestBlockData) MainManager.getBlockData(block);
-            if (Objects.requireNonNull(data).attr) PowerManager.outputPower(block, 30);
-            else PowerManager.inputPower(block, 30);
+            if (Objects.requireNonNull(data).attr) new EnergyPacket(block, 30).spread(block);
         });
     }
 
     @Override
-    public void finishInput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
+    public void input(@Nonnull Location block, double amount) {
     }
 
     @Override
-    public boolean finishOutput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
+    public boolean output(@Nonnull Location block, double amount) {
         return true;
     }
 
@@ -108,6 +107,16 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     public boolean onPistonPush(@Nonnull Block block, @Nonnull Block piston, @Nonnull BlockFace direction,
             @Nonnull List<Block> pushedBlocks) {
         return true;
+    }
+
+    @Override
+    public double demand(@Nonnull Location block) {
+        return 30;
+    }
+
+    @Override
+    public boolean available(@Nonnull Location loc) {
+        return !((TestBlockData) Objects.requireNonNull(MainManager.getBlockData(loc))).attr;
     }
 
     public static class TestBlockData extends BlockData {

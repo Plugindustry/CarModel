@@ -12,6 +12,7 @@ import io.github.plugindustry.wheelcore.manager.RecipeRegistry;
 import io.github.plugindustry.wheelcore.manager.recipe.ShapedRecipeFactory;
 import io.github.plugindustry.wheelcore.manager.recipe.ShapelessRecipe;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,18 +33,19 @@ public final class CarModel extends JavaPlugin {
                 new InputStreamReader(Objects.requireNonNull(getResource("zh_cn.lang")), StandardCharsets.UTF_8));
         I18n.load(Locale.US,
                 new InputStreamReader(Objects.requireNonNull(getResource("en_us.lang")), StandardCharsets.UTF_8));
-        MainManager.registerBlock("TEST_BLOCK", TestBlock.INSTANCE);
-        MainManager.registerBlock("TEST_WIRE", TestWire.INSTANCE);
-        MainManager.registerBlock("TEST_ENERGY_INPUT", TestEnergyInput.INSTANCE);
-        MainManager.registerBlock("TEST_ENERGY_OUTPUT", TestEnergyOutput.INSTANCE);
-        MainManager.registerItem("TEST_ITEM", TestItem.INSTANCE);
-        MainManager.registerItem("TEST_TOOL", TestTool.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "TEST_BLOCK"), TestBlock.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "TEST_WIRE"), TestWire.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "TEST_ENERGY_INPUT"), TestEnergyInput.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "TEST_ENERGY_OUTPUT"), TestEnergyOutput.INSTANCE);
+        MainManager.registerItem(new NamespacedKey(this, "TEST_ITEM"), TestItem.INSTANCE);
+        MainManager.registerItem(new NamespacedKey(this, "TEST_TOOL"), TestTool.INSTANCE);
         ConstItem.init();
 
         RecipeRegistry.register(ShapedRecipeFactory.create().pattern("aaa", "nsn", "nsn").map('a', ConstItem.TEST_ITEM)
-                .map('s', new ItemStack(Material.STICK)).build(ConstItem.TEST_TOOL), "cm/test_tool_recipe", false);
+                        .map('s', new ItemStack(Material.STICK)).build(ConstItem.TEST_TOOL),
+                new NamespacedKey(this, "cm/test_tool_recipe"), false);
         RecipeRegistry.register(new ShapelessRecipe(ConstItem.TEST_ITEM, new ItemStack(Material.IRON_INGOT),
-                new ItemStack(Material.DIAMOND)), "cm/test_item_recipe");
+                new ItemStack(Material.DIAMOND)), new NamespacedKey(this, "cm/test_item_recipe"));
         RecipeRegistry.updatePlaceholders();
     }
 

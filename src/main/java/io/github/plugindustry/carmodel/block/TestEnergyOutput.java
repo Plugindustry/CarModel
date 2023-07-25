@@ -7,10 +7,9 @@ import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.interfaces.block.Wire;
 import io.github.plugindustry.wheelcore.interfaces.power.EnergyOutputable;
+import io.github.plugindustry.wheelcore.interfaces.power.EnergyPacket;
 import io.github.plugindustry.wheelcore.manager.MainManager;
-import io.github.plugindustry.wheelcore.manager.PowerManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -64,8 +63,9 @@ public class TestEnergyOutput extends DummyBlock implements Tickable, EnergyOutp
             TestEnergyOutputData temp = (TestEnergyOutputData) data;
             Objects.requireNonNull(temp).output(-temp.tickOutput);
         });
-        MainManager.blockDataProvider.blocksOf(this).forEach(block -> PowerManager.outputPower(block,
-                ((TestEnergyOutputData) Objects.requireNonNull(MainManager.getBlockData(block))).expectOutput));
+        MainManager.blockDataProvider.blocksOf(this).forEach(block -> new EnergyPacket(block,
+                ((TestEnergyOutputData) Objects.requireNonNull(MainManager.getBlockData(block))).expectOutput).spread(
+                block));
     }
 
     @Override
@@ -99,8 +99,8 @@ public class TestEnergyOutput extends DummyBlock implements Tickable, EnergyOutp
     }
 
     @Override
-    public boolean finishOutput(@Nonnull Location block, @Nonnull Wire.PowerPacket packet) {
-        ((TestEnergyOutputData) Objects.requireNonNull(MainManager.getBlockData(block))).output(packet.orgAmount);
+    public boolean output(@Nonnull Location block, double amount) {
+        ((TestEnergyOutputData) Objects.requireNonNull(MainManager.getBlockData(block))).output(amount);
         return true;
     }
 
