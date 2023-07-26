@@ -96,7 +96,7 @@ public class TestEnergyInput extends DummyBlock implements Tickable, EnergyInput
 
     @Override
     public double demand(@Nonnull Location block) {
-        return Double.MAX_VALUE;
+        return ((TestEnergyInputData) Objects.requireNonNull(MainManager.getBlockData(block))).expectInput;
     }
 
     @Override
