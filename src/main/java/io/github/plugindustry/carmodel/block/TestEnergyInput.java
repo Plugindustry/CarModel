@@ -7,7 +7,7 @@ import io.github.plugindustry.carmodel.ConstItem;
 import io.github.plugindustry.wheelcore.interfaces.Tickable;
 import io.github.plugindustry.wheelcore.interfaces.block.BlockData;
 import io.github.plugindustry.wheelcore.interfaces.block.DummyBlock;
-import io.github.plugindustry.wheelcore.interfaces.power.EnergyInputable;
+import io.github.plugindustry.wheelcore.interfaces.transport.power.EnergyInputable;
 import io.github.plugindustry.wheelcore.manager.MainManager;
 import io.github.plugindustry.wheelcore.utils.ItemStackUtil;
 import org.bukkit.Location;
