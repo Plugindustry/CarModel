@@ -33,19 +33,19 @@ public final class CarModel extends JavaPlugin {
                 new InputStreamReader(Objects.requireNonNull(getResource("zh_cn.lang")), StandardCharsets.UTF_8));
         I18n.load(Locale.US,
                 new InputStreamReader(Objects.requireNonNull(getResource("en_us.lang")), StandardCharsets.UTF_8));
-        MainManager.registerBlock(new NamespacedKey(this, "TEST_BLOCK"), TestBlock.INSTANCE);
-        MainManager.registerBlock(new NamespacedKey(this, "TEST_WIRE"), TestWire.INSTANCE);
-        MainManager.registerBlock(new NamespacedKey(this, "TEST_ENERGY_INPUT"), TestEnergyInput.INSTANCE);
-        MainManager.registerBlock(new NamespacedKey(this, "TEST_ENERGY_OUTPUT"), TestEnergyOutput.INSTANCE);
-        MainManager.registerItem(new NamespacedKey(this, "TEST_ITEM"), TestItem.INSTANCE);
-        MainManager.registerItem(new NamespacedKey(this, "TEST_TOOL"), TestTool.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "test_block"), TestBlock.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "test_wire"), TestWire.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "test_energy_input"), TestEnergyInput.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "test_energy_output"), TestEnergyOutput.INSTANCE);
+        MainManager.registerItem(new NamespacedKey(this, "test_item"), TestItem.INSTANCE);
+        MainManager.registerItem(new NamespacedKey(this, "test_tool"), TestTool.INSTANCE);
         ConstItem.init();
 
         RecipeRegistry.register(ShapedRecipeFactory.create().pattern("aaa", "nsn", "nsn").map('a', ConstItem.TEST_ITEM)
                         .map('s', new ItemStack(Material.STICK)).build(ConstItem.TEST_TOOL),
-                new NamespacedKey(this, "cm/test_tool_recipe"), false);
+                new NamespacedKey(this, "test_tool_recipe"), false);
         RecipeRegistry.register(new ShapelessRecipe(ConstItem.TEST_ITEM, new ItemStack(Material.IRON_INGOT),
-                new ItemStack(Material.DIAMOND)), new NamespacedKey(this, "cm/test_item_recipe"));
+                new ItemStack(Material.DIAMOND)), new NamespacedKey(this, "test_item_recipe"));
         RecipeRegistry.updatePlaceholders();
     }
 
