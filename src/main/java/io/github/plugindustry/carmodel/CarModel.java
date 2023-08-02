@@ -1,9 +1,7 @@
 package io.github.plugindustry.carmodel;
 
-import io.github.plugindustry.carmodel.block.TestBlock;
-import io.github.plugindustry.carmodel.block.TestEnergyInput;
-import io.github.plugindustry.carmodel.block.TestEnergyOutput;
-import io.github.plugindustry.carmodel.block.TestWire;
+import io.github.plugindustry.carmodel.block.*;
+import io.github.plugindustry.carmodel.fluid.TestFluid;
 import io.github.plugindustry.carmodel.item.TestItem;
 import io.github.plugindustry.carmodel.item.TestTool;
 import io.github.plugindustry.wheelcore.i18n.I18n;
@@ -29,16 +27,20 @@ public final class CarModel extends JavaPlugin {
         // Plugin startup logic
         instance = this;
 
-        I18n.load(Locale.SIMPLIFIED_CHINESE,
+        I18n.load(Locale.SIMPLIFIED_CHINESE, this,
                 new InputStreamReader(Objects.requireNonNull(getResource("zh_cn.lang")), StandardCharsets.UTF_8));
-        I18n.load(Locale.US,
+        I18n.load(Locale.US, this,
                 new InputStreamReader(Objects.requireNonNull(getResource("en_us.lang")), StandardCharsets.UTF_8));
         MainManager.registerBlock(new NamespacedKey(this, "test_block"), TestBlock.INSTANCE);
         MainManager.registerBlock(new NamespacedKey(this, "test_wire"), TestWire.INSTANCE);
         MainManager.registerBlock(new NamespacedKey(this, "test_energy_input"), TestEnergyInput.INSTANCE);
         MainManager.registerBlock(new NamespacedKey(this, "test_energy_output"), TestEnergyOutput.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "test_fluid_input"), TestFluidInput.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "test_fluid_output"), TestFluidOutput.INSTANCE);
+        MainManager.registerBlock(new NamespacedKey(this, "test_fluid_pipe"), TestFluidPipe.INSTANCE);
         MainManager.registerItem(new NamespacedKey(this, "test_item"), TestItem.INSTANCE);
         MainManager.registerItem(new NamespacedKey(this, "test_tool"), TestTool.INSTANCE);
+        MainManager.registerFluid(new NamespacedKey(this, "test_fluid"), TestFluid.INSTANCE);
         ConstItem.init();
 
         RecipeRegistry.register(ShapedRecipeFactory.create().pattern("aaa", "nsn", "nsn").map('a', ConstItem.TEST_ITEM)
