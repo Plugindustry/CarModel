@@ -1,5 +1,6 @@
 package io.github.plugindustry.carmodel;
 
+import io.github.plugindustry.carmodel.item.DarkTalisman;
 import io.github.plugindustry.carmodel.item.TestItem;
 import io.github.plugindustry.carmodel.item.TestTool;
 import io.github.plugindustry.wheelcore.i18n.I18n;
@@ -24,6 +25,7 @@ public final class ConstItem {
     public static ItemStack TEST_WIRE_ITEM;
     public static ItemStack TEST_ITEM;
     public static ItemStack TEST_TOOL;
+    public static ItemStack DARK_TALISMAN;
 
     public static void init() {
         ItemBase instance = new DummyBlockItem();
@@ -107,5 +109,12 @@ public final class ConstItem {
                                 new NamespacedKey(CarModel.instance, "item/test_fluid_pipe/lore")))).instance(instance)
                         .getItemStack());
         TEST_FLUID_PIPE_ITEM = ItemMapping.get(new NamespacedKey(CarModel.instance, "test_fluid_pipe"));
+
+        ItemMapping.set(new NamespacedKey(CarModel.instance, "dark_talisman"), ItemStackUtil.create(Material.OBSIDIAN)
+                .displayName(I18n.getLocalePlaceholder(new NamespacedKey(CarModel.instance, "item/dark_talisman/name")))
+                .lore(Collections.singletonList(
+                        I18n.getLocaleListPlaceholder(new NamespacedKey(CarModel.instance, "item/dark_talisman/lore"))))
+                .instance(DarkTalisman.INSTANCE).getItemStack());
+        DARK_TALISMAN = ItemMapping.get(new NamespacedKey(CarModel.instance, "dark_talisman"));
     }
 }

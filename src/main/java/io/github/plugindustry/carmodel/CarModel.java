@@ -2,6 +2,7 @@ package io.github.plugindustry.carmodel;
 
 import io.github.plugindustry.carmodel.block.*;
 import io.github.plugindustry.carmodel.fluid.TestFluid;
+import io.github.plugindustry.carmodel.item.DarkTalisman;
 import io.github.plugindustry.carmodel.item.TestItem;
 import io.github.plugindustry.carmodel.item.TestTool;
 import io.github.plugindustry.wheelcore.i18n.I18n;
@@ -40,6 +41,7 @@ public final class CarModel extends JavaPlugin {
         MainManager.registerBlock(new NamespacedKey(this, "test_fluid_pipe"), TestFluidPipe.INSTANCE);
         MainManager.registerItem(new NamespacedKey(this, "test_item"), TestItem.INSTANCE);
         MainManager.registerItem(new NamespacedKey(this, "test_tool"), TestTool.INSTANCE);
+        MainManager.registerItem(new NamespacedKey(this, "dark_talisman"), DarkTalisman.INSTANCE);
         MainManager.registerFluid(new NamespacedKey(this, "test_fluid"), TestFluid.INSTANCE);
         ConstItem.init();
 
