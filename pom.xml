@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.github.Plugindustry</groupId>
             <artifactId>WheelCore</artifactId>
-            <version>ada2f3d723</version>
+            <version>e2dc392947</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
