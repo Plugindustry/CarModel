@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, EnergyOutputable, TexturedBlock,
         PistonPushable, PistonPullable {
@@ -117,6 +118,11 @@ public class TestBlock extends DummyBlock implements Tickable, EnergyInputable, 
     @Override
     public boolean available(@Nonnull Location loc) {
         return !((TestBlockData) Objects.requireNonNull(MainManager.getBlockData(loc))).attr;
+    }
+
+    @Override
+    public Optional<Float> getBlastResistance(@Nonnull Block block) {
+        return Optional.of(1200.0f);
     }
 
     public static class TestBlockData extends BlockData {
